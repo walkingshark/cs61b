@@ -106,6 +106,30 @@ public class Model extends Observable {
      *    value, then the leading two tiles in the direction of motion merge,
      *    and the trailing tile does not.
      * */
+     public int[] consecutive(int col){
+         // result: int array which length is 2
+         // result[0]: which row starts the consectutive block(count from top)
+         // result[1]: how many consectutive blocks
+         int[] result = {};
+         int prev = -1;
+         int count = 0;
+         int start = -1;
+         for (int i = 3; i >= 0; i--){
+             int num = board.tile(col, i).value();
+             if (num == prev){
+                 count++;
+             } else{
+                 if (count > result[1]) {
+                     result[0] = start;
+                     result[1] = count;
+                 }
+                 start = i;
+                 count = 1;
+             }
+             prev = num;
+         }
+         return result;
+     }
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
@@ -113,7 +137,17 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
-
+        // i means col(start from left), j means row(starts from second-top)
+        for (int i = 0; i < board.size(); i++){
+            int[] temp = consecutive(i);
+            int start = temp[0];
+            int n = temp[1];
+            switch (n){
+                case 2:
+                    Tile t = board.tile(i, start - 1);
+                    t
+            }
+        }
         checkGameOver();
         if (changed) {
             setChanged();
