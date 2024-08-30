@@ -115,6 +115,7 @@ public class Model extends Observable {
          int count = 0;
          int start = -1;
          for (int i = 3; i >= 0; i--){
+             // what if board.tile is null?
              int num = board.tile(col, i).value();
              if (num == prev){
                  count++;
@@ -130,6 +131,12 @@ public class Model extends Observable {
          }
          return result;
      }
+     public int[] update_move_stat(int[] move_stat, int n){
+         for (int i = 0; i < n; i++){
+             move_stat[i]++;
+         }
+         return move_stat;
+     }
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
@@ -138,14 +145,35 @@ public class Model extends Observable {
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
         // i means col(start from left), j means row(starts from second-top)
+        // move stat: index: row, element: -1-->already merged, positive: steps to move
         for (int i = 0; i < board.size(); i++){
-            int[] temp = consecutive(i);
-            int start = temp[0];
-            int n = temp[1];
-            switch (n){
-                case 2:
-                    Tile t = board.tile(i, start - 1);
-                    t
+            int[] move_stat = {0, 0, 0, 0};
+            for (int j = 2; j >= 0; j--){
+                Tile cur = board.tile(i, j);
+                if (cur == null){
+                    break;
+                }
+                for (int k = j+1; k <= 3; k++){
+                    Tile prev = board.tile(i, k);
+                    if(prev != null){
+                        if(prev.value() == cur.value() && move_stat[k] != -1){
+                            board.move(i, k+move_stat[j], cur);
+                            // update move stats
+                            move_stat = update_move_stat(move_stat, j);
+                            //score?
+                            score += cur.value() * 2;
+                            move_stat[k] = -1;
+                            changed = true;
+                            break;
+                        }
+                    } else if(k == 3){
+                        board.move(i, k+move_stat[j], cur);
+                        //update move stats
+                        move_stat = update_move_stat(move_stat, j);
+                        changed = true;
+                    }
+                }
+
             }
         }
         checkGameOver();
