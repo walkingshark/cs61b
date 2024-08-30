@@ -157,19 +157,19 @@ public class Model extends Observable {
                     Tile prev = board.tile(i, k);
                     if(prev != null){
                         if(prev.value() == cur.value() && move_stat[k] != -1){
-                            board.move(i, k+move_stat[j], cur);
-                            // update move stats
-                            move_stat = update_move_stat(move_stat, j);
+                            board.move(i, k, cur);
                             //score?
                             score += cur.value() * 2;
                             move_stat[k] = -1;
                             changed = true;
                             break;
+                        } else {
+                            board.move(i, k-1, cur);
+                            changed = true;
+                            break;
                         }
                     } else if(k == 3){
-                        board.move(i, k+move_stat[j], cur);
-                        //update move stats
-                        move_stat = update_move_stat(move_stat, j);
+                        board.move(i, k, cur);
                         changed = true;
                     }
                 }
