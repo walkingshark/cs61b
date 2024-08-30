@@ -106,41 +106,10 @@ public class Model extends Observable {
      *    value, then the leading two tiles in the direction of motion merge,
      *    and the trailing tile does not.
      * */
-     public int[] consecutive(int col){
-         // result: int array which length is 2
-         // result[0]: which row starts the consectutive block(count from top)
-         // result[1]: how many consectutive blocks
-         int[] result = {};
-         int prev = -1;
-         int count = 0;
-         int start = -1;
-         for (int i = 3; i >= 0; i--){
-             // what if board.tile is null?
-             int num = board.tile(col, i).value();
-             if (num == prev){
-                 count++;
-             } else{
-                 if (count > result[1]) {
-                     result[0] = start;
-                     result[1] = count;
-                 }
-                 start = i;
-                 count = 1;
-             }
-             prev = num;
-         }
-         return result;
-     }
-     public int[] update_move_stat(int[] move_stat, int n){
-         for (int i = 0; i < n; i++){
-             move_stat[i]++;
-         }
-         return move_stat;
-     }
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
-
+        board.setViewingPerspective(side);
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
@@ -151,7 +120,7 @@ public class Model extends Observable {
             for (int j = 2; j >= 0; j--){
                 Tile cur = board.tile(i, j);
                 if (cur == null){
-                    break;
+                    continue;
                 }
                 for (int k = j+1; k <= 3; k++){
                     Tile prev = board.tile(i, k);
@@ -176,6 +145,7 @@ public class Model extends Observable {
 
             }
         }
+        board.setViewingPerspective(Side.NORTH);
         checkGameOver();
         if (changed) {
             setChanged();
