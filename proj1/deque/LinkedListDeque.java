@@ -14,12 +14,18 @@ public class LinkedListDeque<T>{
     private int size;
 
     public LinkedListDeque(){
-        sentinel = new aNode(-1, null);
+        sentinel = new aNode(null, null);
         size = 0;
     }
-    public LinkedListDeque(T x){
-        sentinel = new aNode(-1, null);
-        sentinel.next = new aNode(x, null);
-        size = 1;
+
+    public void addFirst(T item){
+        sentinel.item = item;
+        sentinel.next = new aNode(item, sentinel.next);
+        size++;
     }
+    
+    public static void main(String[] args) {
+
+    }
+
 }
