@@ -14,12 +14,18 @@ public class SLList {
     private IntNode sentinel;
     private int size;
     public SLList(int x) {
-        sentinel = new IntNode(-1, null);
-        sentinel.next = new IntNode(x, null);
+        sentinel = new IntNode(null, -1, null);
+        IntNode newNode = new IntNode(null, x, null);
+        sentinel.next = newNode;
+        sentinel.prev = newNode;
+        newNode.prev = sentinel;
+        newNode.next = sentinel;
         size = 1;
     }
     public SLList() {
-        sentinel = new IntNode(-1, null);
+        sentinel = new IntNode(null, -1, null);
+        sentinel.next = sentinel;
+        sentinel.prev = sentinel;
         size = 0;
     }
     public void addFirst(int x) {
@@ -35,6 +41,7 @@ public class SLList {
         sentinel.prev.next = last;
         sentinel.prev = last;
         last.next = sentinel;
+        size++;
 
     }
     public int getLast() {
