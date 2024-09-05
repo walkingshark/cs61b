@@ -2,9 +2,11 @@ package deque;
 
 public class SLList {
     public static class IntNode {
+        public IntNode prev;
         public int item;
         public IntNode next;
-        public IntNode(int i, IntNode n) {
+        public IntNode(IntNode p, int i, IntNode n) {
+            prev = p;
             item = i;
             next = n;
         }
@@ -28,14 +30,19 @@ public class SLList {
         return sentinel.next.item;
     }
     public void addLast(int x) {
-        IntNode p = sentinel;
-        while (p.next != null) {
-            p = p.next;
-        }
-        p.next = new IntNode(x, null);
-        size++;
-    }
+        IntNode last = new IntNode(null, x, null);
+        last.prev = sentinel.prev;
+        sentinel.prev.next = last;
+        sentinel.prev = last;
+        last.next = sentinel;
 
+    }
+    public int getLast() {
+
+    }
+    public int removeLast() {
+
+    }
     public int size() {
         return size;
     }
