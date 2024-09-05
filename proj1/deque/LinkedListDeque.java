@@ -23,7 +23,9 @@ public class LinkedListDeque<T>{
         sentinel.next = new aNode(item, sentinel.next);
         size++;
     }
-    
+    public void addLast(T item) {
+
+    }
     public static void main(String[] args) {
 
     }
