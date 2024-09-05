@@ -9,21 +9,26 @@ public class SLList {
             next = n;
         }
     }
-    private IntNode first;
+    private IntNode sentinel;
     private int size;
     public SLList(int x) {
-        first = new IntNode(x, null);
+        sentinel = new IntNode(-1, null);
+        sentinel.next = new IntNode(x, null);
         size = 1;
     }
+    public SLList() {
+        sentinel = new IntNode(-1, null);
+        size = 0;
+    }
     public void addFirst(int x) {
-        first = new IntNode(x, first);
+        sentinel.next = new IntNode(x, sentinel.next);
         size++;
     }
     public int getFirst() {
-        return first.item;
+        return sentinel.next.item;
     }
     public void addLast(int x) {
-        IntNode p = first;
+        IntNode p = sentinel;
         while (p.next != null) {
             p = p.next;
         }
