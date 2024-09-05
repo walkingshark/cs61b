@@ -10,14 +10,14 @@ public class SLList {
         }
     }
     private IntNode first;
-    
+    private int size;
     public SLList(int x) {
         first = new IntNode(x, null);
-
+        size = 1;
     }
     public void addFirst(int x) {
         first = new IntNode(x, first);
-
+        size++;
     }
     public int getFirst() {
         return first.item;
@@ -28,17 +28,11 @@ public class SLList {
             p = p.next;
         }
         p.next = new IntNode(x, null);
+        size++;
+    }
 
-    }
-    private int size(IntNode p) {
-        if (p == null) {
-            return 0;
-        } else{
-            return 1 + size(p.next);
-        }
-    }
     public int size() {
-        return size(first);
+        return size;
     }
     public static void main(String[] args) {
         SLList l = new SLList(15);
