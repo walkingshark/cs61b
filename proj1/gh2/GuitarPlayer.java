@@ -21,7 +21,7 @@ public class GuitarPlayer {
         try {
             sequence = MidiSystem.getSequence(source);
         } catch (IOException | InvalidMidiDataException e) {
-            e.printStackTrace();
+            e.prTStackTrace();
         }
     }
 
