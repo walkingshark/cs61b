@@ -29,7 +29,10 @@ public class SLList {
         size = 0;
     }
     public void addFirst(int x) {
-        sentinel.next = new IntNode(x, sentinel.next);
+        IntNode first = new IntNode(null, x, null);
+        first.next = sentinel.next;
+        sentinel.next.prev = first;
+        sentinel.next = first;
         size++;
     }
     public int getFirst() {
@@ -45,10 +48,26 @@ public class SLList {
 
     }
     public int getLast() {
-
+        return sentinel.prev.item;
     }
     public int removeLast() {
-
+        //if there's only sentinel node
+        if (sentinel.prev == sentinel) {
+            return null;
+        }
+        int result = sentinel.prev.item;
+        sentinel.prev = sentinel.prev.prev;
+        sentinel.prev.next = sentinel;
+        return result;
+    }
+    public int removeFirst() {
+        if (sentinel.prev == sentinel) {
+            return null;
+        }
+        int result = sentinel.next.item;
+        sentinel.next.next.prev = sentinel;
+        sentinel.next = sentinel.next.next;
+        return result;
     }
     public int size() {
         return size;
