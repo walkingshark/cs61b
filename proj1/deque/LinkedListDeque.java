@@ -33,6 +33,8 @@ public class LinkedListDeque<T> {
         first.next = sentinel.next;
         sentinel.next.prev = first;
         sentinel.next = first;
+        first.prev = sentinel;
+
         size++;
     }
     public T getFirst() {
@@ -58,6 +60,7 @@ public class LinkedListDeque<T> {
         T result = sentinel.prev.item;
         sentinel.prev = sentinel.prev.prev;
         sentinel.prev.next = sentinel;
+        size--;
         return result;
     }
     public T removeFirst() {
@@ -67,6 +70,7 @@ public class LinkedListDeque<T> {
         T result = sentinel.next.item;
         sentinel.next.next.prev = sentinel;
         sentinel.next = sentinel.next.next;
+        size--;
         return result;
     }
     public boolean isEmpty() {
@@ -110,11 +114,12 @@ public class LinkedListDeque<T> {
             return getRecursive(index, sentinel);
         }
     }
+    /**
     public boolean equals(Object o) {
         if (!(o instanceof LinkedListDeque) || (o.size != this.size)){
             return false;
         }
-    }
+    }*/
     public static void main(String[] args) {
         LinkedListDeque l = new LinkedListDeque(15);
         l.addFirst(10);
