@@ -1,34 +1,34 @@
 package deque;
-public class AList {
+public class AList<Item> {
     private int size;
-    private int[] items;
+    private Item[] items;
     /** Creates an empty list. */
     public AList() {
-        items = new int[100];
+        items = (Item[]) new Object[100];
         size = 0;
     }
     // resizing the array
     public void resize(int capacity) {
-        int[] temp = new int[capacity];
+        Item[] temp = (Item[]) new Object[capacity];
         System.arraycopy(items, 0, temp, 0, size);
         items = temp;
     }
     /** Inserts X into the back of the list. */
-    public void addLast(int x) {
+    public void addLast(Item x) {
 
         if (size == items.length){
-            resize(size*2);
+            resize(size * 2);
         }
         items[size] = x;
         size++;
     }
 
     /** Returns the item from the back of the list. */
-    public int getLast() {
+    public Item getLast() {
         return items[size-1];
     }
     /** Gets the ith item in the list (0 is the front). */
-    public int get(int i) {
+    public Item get(int i) {
         return items[i];
     }
 
@@ -39,8 +39,8 @@ public class AList {
 
     /** Deletes item from back of the list and
      * returns deleted item. */
-    public int removeLast() {
-        int result = getLast();
+    public Item removeLast() {
+        Item result = getLast();
         size--;
         return result;
     }
