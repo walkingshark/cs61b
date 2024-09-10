@@ -10,7 +10,10 @@ public class AList {
 
     /** Inserts X into the back of the list. */
     public void addLast(int x) {
-        items[size] = x;
+        int[] temp = new int[size+1];
+        System.arraycopy(items, 0, temp, 0, size);
+        temp[size] = x;
+        items = temp;
         size++;
     }
 
