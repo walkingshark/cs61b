@@ -1,19 +1,25 @@
 package deque;
 public class AList {
-    int size;
-    int[] items;
+    private int size;
+    private int[] items;
     /** Creates an empty list. */
     public AList() {
         items = new int[100];
         size = 0;
     }
-
+    // resizing the array
+    public void resize(int capacity) {
+        int[] temp = new int[capacity];
+        System.arraycopy(items, 0, temp, 0, size);
+        items = temp;
+    }
     /** Inserts X into the back of the list. */
     public void addLast(int x) {
-        int[] temp = new int[size+1];
-        System.arraycopy(items, 0, temp, 0, size);
-        temp[size] = x;
-        items = temp;
+
+        if (size == items.length){
+            resize(size*2);
+        }
+        items[size] = x;
         size++;
     }
 
