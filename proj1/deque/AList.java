@@ -41,6 +41,7 @@ public class AList<Item> {
      * returns deleted item. */
     public Item removeLast() {
         Item result = getLast();
+        items[size - 1] = null;
         size--;
         return result;
     }
