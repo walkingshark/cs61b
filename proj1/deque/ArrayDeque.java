@@ -2,10 +2,17 @@ package deque;
 public class ArrayDeque<Item> {
     private int size;
     private Item[] items;
+
+    // make array circular, nextFirst and nextLast are indexes
+    private int nextFirst;
+    private int nextLast;
+
     /** Creates an empty list. */
     public ArrayDeque() {
-        items = (Item[]) new Object[100];
+        items = (Item[]) new Object[8];
         size = 0;
+        nextFirst = 0;
+        nextLast = 1;
     }
     // resizing the array
     public void resize(int capacity) {
@@ -21,6 +28,7 @@ public class ArrayDeque<Item> {
         }
         items[size] = x;
         size++;
+        nextLast = size;
     }
 
     /** Returns the item from the back of the list.*/
@@ -42,11 +50,17 @@ public class ArrayDeque<Item> {
     public Item removeLast() {
         Item result = getLast();
         items[size - 1] = null;
+        nextLast = size - 1;
         size--;
         return result;
     }
     public void addFirst(Item item){
-
+        if (nextFirst == size - 1){
+            resize(size * 2);
+        }
+        items[size - 1] = item;
+        nextFirst = size - 2;
+        size++;
     }
     public boolean isEmpty(){
 
