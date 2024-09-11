@@ -1,4 +1,5 @@
 package deque;
+
 public class ArrayDeque<Item> {
     private int size;
     private Item[] items;
@@ -26,9 +27,9 @@ public class ArrayDeque<Item> {
         if (size == items.length){
             resize(size * 2);
         }
-        items[size] = x;
+        items[nextLast] = x;
         size++;
-        nextLast = size;
+        nextLast = Math.floorMod(nextLast + 1, items.length);
     }
 
     /** Returns the item from the back of the list.*/
@@ -37,7 +38,18 @@ public class ArrayDeque<Item> {
     }
     /** Gets the ith item in the list (0 is the front). */
     public Item get(int i) {
-        return items[i];
+        // if the 0th item is not actually at 0th in the array
+        if (nextFirst != items.length - 1){
+            // backNum: how many front-items that are at the back of the array
+            int backNum = items.length - nextFirst;
+            if (i < backNum){
+                return items[nextFirst + i];
+            } else {
+                return items[i - backNum];
+            }
+        } else {
+            return items[i];
+        }
     }
 
     /** Returns the number of items in the list. */
@@ -54,22 +66,31 @@ public class ArrayDeque<Item> {
         size--;
         return result;
     }
-    public void addFirst(Item item){
-        if (nextFirst == size - 1){
+    public void addFirst(Item item) {
+        if (nextFirst == size - 1) {
             resize(size * 2);
         }
-        items[size - 1] = item;
-        nextFirst = size - 2;
+        items[nextFirst] = item;
+        nextFirst--;
         size++;
     }
     public boolean isEmpty(){
-
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] != null) {
+                return false;
+            }
+        }
+        return true;
     }
     public void printDeque(){
 
     }
     public Item removeFirst(){
+        if (nextFirst == items.length - 1){
+            Item result = items[0];
+            items[0] = null;
 
+        }
     }
 
 }
