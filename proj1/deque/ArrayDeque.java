@@ -34,7 +34,7 @@ public class ArrayDeque<Item> {
 
     /** Returns the item from the back of the list.*/
     public Item getLast() {
-        return items[size-1];
+        return items[Math.floorMod(nextLast - 1, items.length)];
     }
     /** Gets the ith item in the list (0 is the front). */
     public Item get(int i) {
@@ -85,12 +85,13 @@ public class ArrayDeque<Item> {
     public void printDeque(){
 
     }
+    /**
     public Item removeFirst(){
+
         if (nextFirst == items.length - 1){
             Item result = items[0];
             items[0] = null;
-
         }
-    }
+    }*/
 
 }
