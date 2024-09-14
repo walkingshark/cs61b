@@ -15,11 +15,15 @@ public class ArrayDeque<Item> {
         nextFirst = 0;
         nextLast = 1;
     }
-    // resizing the array
+    // resizing the array(the spaces are at the back) and reset nextFirst, nextLast
     public void resize(int capacity) {
         Item[] temp = (Item[]) new Object[capacity];
-        System.arraycopy(items, 0, temp, 0, size);
+        for (int j = 0; j < size; j++){
+            temp[j] = get(j);
+        }
         items = temp;
+        nextFirst = items.length - 1;
+        nextLast = size;
     }
     /** Inserts X into the back of the list. */
     public void addLast(Item x) {
