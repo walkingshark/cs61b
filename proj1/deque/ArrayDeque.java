@@ -39,6 +39,7 @@ public class ArrayDeque<Item> {
     /** Gets the ith item in the list (0 is the front). */
     public Item get(int i) {
         // if the 0th item is not actually at 0th in the array
+        /**
         if (nextFirst != items.length - 1){
             // backNum: how many front-items that are at the back of the array
             int backNum = items.length - nextFirst;
@@ -49,7 +50,8 @@ public class ArrayDeque<Item> {
             }
         } else {
             return items[i];
-        }
+        }*/
+        return items[Math.floorMod(nextFirst + 1 + i, items.length)];
     }
 
     /** Returns the number of items in the list. */
@@ -61,8 +63,8 @@ public class ArrayDeque<Item> {
      * returns deleted item. */
     public Item removeLast() {
         Item result = getLast();
-        items[size - 1] = null;
-        nextLast = size - 1;
+        items[Math.floorMod(nextLast - 1, items.length)] = null;
+        nextLast = Math.floorMod(nextLast - 1, items.length);
         size--;
         return result;
     }
