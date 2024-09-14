@@ -77,27 +77,22 @@ public class ArrayDeque<Item> {
             resize(size * 2);
         }
         items[nextFirst] = item;
-        nextFirst--;
+        nextFirst = Math.floorMod(nextFirst - 1, items.length);
         size++;
     }
     public boolean isEmpty(){
-        for (int i = 0; i < items.length; i++) {
-            if (items[i] != null) {
-                return false;
-            }
-        }
-        return true;
+        return size == 0;
     }
     public void printDeque(){
 
     }
-    /**
-    public Item removeFirst(){
 
-        if (nextFirst == items.length - 1){
-            Item result = items[0];
-            items[0] = null;
-        }
-    }*/
+    public Item removeFirst(){
+        Item result = get(0);
+        items[Math.floorMod(nextFirst + 1, items.length)] = null;
+        nextFirst = Math.floorMod(nextFirst + 1, items.length);
+        size--;
+        return result;
+    }
 
 }

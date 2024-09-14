@@ -140,7 +140,7 @@ public class LinkedListDequeTest {
 
         int N = 4000;
         for (int i = 0; i < N; i += 1) {
-            int operationNumber = StdRandom.uniform(0, 4);
+            int operationNumber = StdRandom.uniform(0, 5);
             if (operationNumber == 0) {
                 // addLast
                 int randVal = StdRandom.uniform(0, 100);
