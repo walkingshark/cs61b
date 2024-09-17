@@ -1,6 +1,6 @@
 package deque;
 
-public class ArrayDeque<Item> {
+public class ArrayDeque<Item> implements Deque<Item>{
     private int size;
     private Item[] items;
 
@@ -16,7 +16,7 @@ public class ArrayDeque<Item> {
         nextLast = 1;
     }
     // resizing the array(the spaces are at the back) and reset nextFirst, nextLast
-    public void resize(int capacity) {
+    private void resize(int capacity) {
         Item[] temp = (Item[]) new Object[capacity];
         for (int j = 0; j < size; j++){
             temp[j] = get(j);
@@ -26,6 +26,7 @@ public class ArrayDeque<Item> {
         nextLast = size;
     }
     /** Inserts X into the back of the list. */
+    @Override
     public void addLast(Item x) {
 
         if (size == items.length){
@@ -41,30 +42,21 @@ public class ArrayDeque<Item> {
         return items[Math.floorMod(nextLast - 1, items.length)];
     }
     /** Gets the ith item in the list (0 is the front). */
+    @Override
     public Item get(int i) {
         // if the 0th item is not actually at 0th in the array
-        /**
-        if (nextFirst != items.length - 1){
-            // backNum: how many front-items that are at the back of the array
-            int backNum = items.length - nextFirst;
-            if (i < backNum){
-                return items[nextFirst + i];
-            } else {
-                return items[i - backNum];
-            }
-        } else {
-            return items[i];
-        }*/
         return items[Math.floorMod(nextFirst + 1 + i, items.length)];
     }
 
     /** Returns the number of items in the list. */
+    @Override
     public int size() {
         return size;
     }
 
     /** Deletes item from back of the list and
      * returns deleted item. */
+    @Override
     public Item removeLast() {
         Item result = getLast();
         items[Math.floorMod(nextLast - 1, items.length)] = null;
@@ -72,6 +64,7 @@ public class ArrayDeque<Item> {
         size--;
         return result;
     }
+    @Override
     public void addFirst(Item item) {
         if (nextFirst == size - 1) {
             resize(size * 2);
@@ -80,13 +73,16 @@ public class ArrayDeque<Item> {
         nextFirst = Math.floorMod(nextFirst - 1, items.length);
         size++;
     }
-    public boolean isEmpty(){
-        return size == 0;
-    }
+    
+    @Override
     public void printDeque(){
-
+        for (int i = 0; i < size; i++){
+            System.out.print(get(i));
+            System.out.print(" ");
+        }
+        System.out.println();
     }
-
+    @Override
     public Item removeFirst(){
         Item result = get(0);
         items[Math.floorMod(nextFirst + 1, items.length)] = null;
