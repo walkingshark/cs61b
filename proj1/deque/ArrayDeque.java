@@ -58,6 +58,9 @@ public class ArrayDeque<Item> implements Deque<Item>{
      * returns deleted item. */
     @Override
     public Item removeLast() {
+        if (size == 0) {
+            return null;
+        }
         Item result = getLast();
         items[Math.floorMod(nextLast - 1, items.length)] = null;
         nextLast = Math.floorMod(nextLast - 1, items.length);
@@ -66,14 +69,14 @@ public class ArrayDeque<Item> implements Deque<Item>{
     }
     @Override
     public void addFirst(Item item) {
-        if (nextFirst == size - 1) {
+        if (items.length == size) {
             resize(size * 2);
         }
         items[nextFirst] = item;
         nextFirst = Math.floorMod(nextFirst - 1, items.length);
         size++;
     }
-    
+
     @Override
     public void printDeque(){
         for (int i = 0; i < size; i++){
@@ -84,6 +87,9 @@ public class ArrayDeque<Item> implements Deque<Item>{
     }
     @Override
     public Item removeFirst(){
+        if (size == 0) {
+            return null;
+        }
         Item result = get(0);
         items[Math.floorMod(nextFirst + 1, items.length)] = null;
         nextFirst = Math.floorMod(nextFirst + 1, items.length);
