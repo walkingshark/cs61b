@@ -212,7 +212,7 @@ public class LinkedListDequeTest {
 
     }
     @Test
-    public void testIterator() {
+    public void testIteratorAndEquals() {
         LinkedListDeque<Integer> L = new LinkedListDeque<>();
         ArrayDeque<Integer> A = new ArrayDeque<>();
         L.addLast(14);
@@ -226,6 +226,7 @@ public class LinkedListDequeTest {
         for (int item : A) {
             System.out.println(item);
         }
+        assertEquals(A.equals(L), true);
     }
 
 }
