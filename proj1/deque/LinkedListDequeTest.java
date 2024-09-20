@@ -2,6 +2,9 @@ package deque;
 
 import edu.princeton.cs.algs4.StdRandom;
 import org.junit.Test;
+
+import java.util.Comparator;
+
 import static org.junit.Assert.*;
 
 
@@ -175,6 +178,37 @@ public class LinkedListDequeTest {
                 A.addFirst(randVal);
             }
         }
+
+    }
+    public class testComparator implements Comparator<Integer> {
+        public int compare(Integer a, Integer b){
+            return a.compareTo(b);
+        }
+    }
+    // return the max number that is odd
+    public class Comparator2 implements Comparator<Integer> {
+        public int compare(Integer a, Integer b){
+            if (a%2 > b%2) {
+                return 1;
+            } else if (a%2 < b%2) {
+                return -1;
+            } else {
+                return a.compareTo(b);
+            }
+        }
+    }
+    @Test
+    public void testMaxArrayDeque() {
+        Comparator<Integer> t = new testComparator();
+        Comparator<Integer> t2 = new Comparator2();
+        MaxArrayDeque<Integer> m = new MaxArrayDeque<>(t2);
+        m.addLast(3);
+        m.addLast(5);
+        m.addLast(14);
+        m.addLast(-1);
+        m.addLast(7);
+        m.addLast(13);
+        System.out.println(m.max());
 
     }
 
