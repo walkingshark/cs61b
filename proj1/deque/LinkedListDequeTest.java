@@ -211,5 +211,21 @@ public class LinkedListDequeTest {
         System.out.println(m.max());
 
     }
+    @Test
+    public void testIterator() {
+        LinkedListDeque<Integer> L = new LinkedListDeque<>();
+        ArrayDeque<Integer> A = new ArrayDeque<>();
+        L.addLast(14);
+        L.addLast(3);
+        L.addLast(1);
+        L.addLast(-9);
+        A.addLast(14);
+        A.addLast(3);
+        A.addLast(1);
+        A.addLast(-9);
+        for (int item : A) {
+            System.out.println(item);
+        }
+    }
 
 }
