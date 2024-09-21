@@ -119,7 +119,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     // user can only get iterator from the method below, but can use hasNext, next, hence public
     private class LinkIterator implements Iterator<T> {
         private int pos;
-        public LinkIterator() {
+        LinkIterator() {
             pos = 0;
         }
         public boolean hasNext() {
