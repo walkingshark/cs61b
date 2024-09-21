@@ -2,9 +2,9 @@ package deque;
 
 import java.util.Iterator;
 
-public class ArrayDeque<Item> implements Deque<Item>, Iterable<Item>{
+public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     private int size;
-    private Item[] items;
+    private T[] items;
 
     // make array circular, nextFirst and nextLast are indexes
     private int nextFirst;
@@ -12,15 +12,15 @@ public class ArrayDeque<Item> implements Deque<Item>, Iterable<Item>{
 
     /** Creates an empty list. */
     public ArrayDeque() {
-        items = (Item[]) new Object[8];
+        items = (T[]) new Object[8];
         size = 0;
         nextFirst = 0;
         nextLast = 1;
     }
     // resizing the array(the spaces are at the back) and reset nextFirst, nextLast
     private void resize(int capacity) {
-        Item[] temp = (Item[]) new Object[capacity];
-        for (int j = 0; j < size; j++){
+        T[] temp = (T[]) new Object[capacity];
+        for (int j = 0; j < size; j++) {
             temp[j] = get(j);
         }
         items = temp;
@@ -29,9 +29,9 @@ public class ArrayDeque<Item> implements Deque<Item>, Iterable<Item>{
     }
     /** Inserts X into the back of the list. */
     @Override
-    public void addLast(Item x) {
+    public void addLast(T x) {
 
-        if (size == items.length){
+        if (size == items.length) {
             resize(size * 2);
         }
         items[nextLast] = x;
@@ -40,12 +40,12 @@ public class ArrayDeque<Item> implements Deque<Item>, Iterable<Item>{
     }
 
     /** Returns the item from the back of the list.*/
-    public Item getLast() {
+    private T getLast() {
         return items[Math.floorMod(nextLast - 1, items.length)];
     }
     /** Gets the ith item in the list (0 is the front). */
     @Override
-    public Item get(int i) {
+    public T get(int i) {
         // if the 0th item is not actually at 0th in the array
         return items[Math.floorMod(nextFirst + 1 + i, items.length)];
     }
@@ -59,14 +59,14 @@ public class ArrayDeque<Item> implements Deque<Item>, Iterable<Item>{
     /** Deletes item from back of the list and
      * returns deleted item. */
     @Override
-    public Item removeLast() {
+    public T removeLast() {
         if (size == 0) {
             return null;
         }
-        if (size > 16 && size - 1 < items.length * 0.25){
+        if (size > 16 && size - 1 < items.length * 0.25) {
             resize(size);
         }
-        Item result = getLast();
+        T result = getLast();
         items[Math.floorMod(nextLast - 1, items.length)] = null;
         nextLast = Math.floorMod(nextLast - 1, items.length);
         size--;
@@ -74,7 +74,7 @@ public class ArrayDeque<Item> implements Deque<Item>, Iterable<Item>{
         return result;
     }
     @Override
-    public void addFirst(Item item) {
+    public void addFirst(T item) {
         if (items.length == size) {
             resize(size * 2);
         }
@@ -84,43 +84,43 @@ public class ArrayDeque<Item> implements Deque<Item>, Iterable<Item>{
     }
 
     @Override
-    public void printDeque(){
-        for (int i = 0; i < size; i++){
+    public void printDeque() {
+        for (int i = 0; i < size; i++) {
             System.out.print(get(i));
             System.out.print(" ");
         }
         System.out.println();
     }
     @Override
-    public Item removeFirst(){
+    public T removeFirst() {
         if (size == 0) {
             return null;
         }
-        if (size > 16 && size - 1 < items.length * 0.25){
+        if (size > 16 && size - 1 < items.length * 0.25) {
             resize(size);
         }
-        Item result = get(0);
+        T result = get(0);
         items[Math.floorMod(nextFirst + 1, items.length)] = null;
         nextFirst = Math.floorMod(nextFirst + 1, items.length);
         size--;
         return result;
     }
-    private class ArrayIterator implements Iterator<Item> {
+    private class ArrayIterator implements Iterator<T> {
         private int pos;
-        public ArrayIterator() {
+        ArrayIterator() {
             pos = 0;
         }
         public boolean hasNext() {
             return pos < size;
         }
-        public Item next() {
-            Item result = get(pos);
+        public T next() {
+            T result = get(pos);
             pos++;
             return result;
         }
     }
     @Override
-    public Iterator<Item> iterator(){
+    public Iterator<T> iterator() {
         return new ArrayDeque.ArrayIterator();
     }
 
@@ -129,15 +129,15 @@ public class ArrayDeque<Item> implements Deque<Item>, Iterable<Item>{
         if (this == other) {
             return true;
         }
-        if (!(other instanceof Deque)){
+        if (!(other instanceof Deque)) {
             return false;
         }
-        Deque<Item> o = (Deque<Item>) other;
+        Deque<T> o = (Deque<T>) other;
         if (o.size() != this.size()) {
             return false;
         }
         for (int i = 0; i < size; i++) {
-            if (this.get(i) != o.get(i)) {
+            if (this.get(i).equals(o.get(i))) {
                 return false;
             }
         }
