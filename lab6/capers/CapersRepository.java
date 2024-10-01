@@ -33,10 +33,13 @@ public class CapersRepository {
      *    - story -- file containing the current story
      */
     public static void setupPersistence() {
-        CAPERS_FOLDER.mkdir();
-        Dog.DOG_FOLDER.mkdir();
-        File story = join(".capers", "story.txt");
-        story.createNewFile();
+        if (!CAPERS_FOLDER.exists()) {
+            CAPERS_FOLDER.mkdir();
+        }
+        if (!Dog.DOG_FOLDER.exists()) {
+            CAPERS_FOLDER.mkdir();
+        }
+
     }
 
     /**
@@ -46,7 +49,13 @@ public class CapersRepository {
      */
     public static void writeStory(String text) {
         File story = join(".capers", "story.txt");
-        writeContents(story, readContentsAsString(story) + text);
+        String s  = text;
+        if (story.exists()) {
+            s = readContentsAsString(story) + "\n" + text;
+        }
+        writeContents(story, s);
+        System.out.print(s);
+
     }
 
     /**
