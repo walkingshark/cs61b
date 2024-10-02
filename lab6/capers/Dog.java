@@ -59,8 +59,8 @@ public class Dog implements Serializable{ // TODO
      */
     public void saveDog() {
         // TODO (hint: don't forget dog names are unique)
-        File dog = join(DOG_FOLDER, this.name);
-        writeObject(dog, this);
+        File adog = join(DOG_FOLDER, this.name);
+        writeObject(adog, this);
     }
 
     @Override
