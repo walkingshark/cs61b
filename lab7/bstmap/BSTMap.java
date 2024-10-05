@@ -23,7 +23,7 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K, V>{
         right = null;
         size = 0;
     }
-    BSTMap(K key, V value) {
+    private BSTMap(K key, V value) {
         root = new BSTNode<>(key, value);
         left = null;
         right = null;
