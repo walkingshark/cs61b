@@ -34,8 +34,10 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K, V>{
     }
     public void clear(){
         root.value = null;
-        if (is_leaf()) {
+        if (left != null) {
             left.clear();
+        }
+        if (right != null) {
             right.clear();
         }
         size = 0;
@@ -43,13 +45,16 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K, V>{
 
     /* Returns true if this map contains a mapping for the specified key. */
     public boolean containsKey(K key){
+        if (root == null) {
+            return false;
+        }
         if (is_leaf()) {
             return key.compareTo(root.key) == 0;
         } else if (key.compareTo(root.key) == 0) {
             return true;
-        } else if (key.compareTo(root.key) > 0) {
+        } else if (right != null && key.compareTo(root.key) > 0) {
             return right.containsKey(key);
-        } else if (key.compareTo(root.key) < 0) {
+        } else if (left != null && key.compareTo(root.key) < 0) {
             return left.containsKey(key);
         }
         return false;
@@ -59,15 +64,18 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K, V>{
      * map contains no mapping for the key.
      */
     public V get(K key){
+        if (root == null) {
+            return null;
+        }
         if (is_leaf()) {
             if (root.key.compareTo(key) == 0) {
                 return root.value;
             } else {
                 return null;
             }
-        } else if (root.key.compareTo(key) > 0) {
+        } else if (right != null && root.key.compareTo(key) > 0) {
             return right.get(key);
-        } else if (root.key.compareTo(key) < 0) {
+        } else if (left != null && root.key.compareTo(key) < 0) {
             return left.get(key);
         } else {
             return root.value;
@@ -82,7 +90,9 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K, V>{
     /* Associates the specified value with the specified key in this map. */
     public void put(K key, V value){
         if (is_leaf() ) {
-            if (key.compareTo(root.key) == 0) {
+            if (root == null) {
+                root = new BSTNode<>(key, value);
+            } else if (key.compareTo(root.key) == 0) {
                 root.value = value;
             } else if (key.compareTo(root.key) > 0) {
                 right = new BSTMap(key, value);
@@ -93,9 +103,9 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K, V>{
         } else if (key.compareTo(root.key) == 0) {
             root.value = value;
             size++;
-        } else if (key.compareTo(root.key) > 0) {
+        } else if (right != null && key.compareTo(root.key) > 0) {
             right.put(key, value);
-        } else if (key.compareTo(root.key) < 0) {
+        } else if (left != null && key.compareTo(root.key) < 0) {
             left.put(key, value);
         }
     }
