@@ -17,7 +17,7 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K, V>{
     BSTNode<K, V> root;
     BSTMap<K, V> left, right;
     int size;
-    BSTMap(){
+    public BSTMap(){
         root = null;
         left = null;
         right = null;
