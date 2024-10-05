@@ -33,14 +33,6 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K, V>{
         return (left == null && right == null);
     }
     public void clear(){
-        /*root.value = null;
-        if (left != null) {
-            left.clear();
-        }
-        if (right != null) {
-            right.clear();
-        }
-        size = 0;*/
         root = null;
         left = null;
         right = null;
@@ -51,17 +43,13 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K, V>{
     public boolean containsKey(K key){
         if (root == null) {
             return false;
-        }
-        if (is_leaf()) {
-            return key.compareTo(root.key) == 0;
-        } else if (key.compareTo(root.key) == 0) {
-            return true;
         } else if (right != null && key.compareTo(root.key) > 0) {
             return right.containsKey(key);
         } else if (left != null && key.compareTo(root.key) < 0) {
             return left.containsKey(key);
+        } else {
+            return key.compareTo(root.key) == 0;
         }
-        return false;
     }
 
     /* Returns the value to which the specified key is mapped, or null if this
@@ -70,13 +58,6 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K, V>{
     public V get(K key){
         if (root == null) {
             return null;
-        }
-        if (is_leaf()) {
-            if (root.key.compareTo(key) == 0) {
-                return root.value;
-            } else {
-                return null;
-            }
         } else if (right != null && key.compareTo(root.key) > 0) {
             return right.get(key);
         } else if (left != null && key.compareTo(root.key) < 0) {
@@ -97,24 +78,25 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K, V>{
 
     /* Associates the specified value with the specified key in this map. */
     public void put(K key, V value){
-        if (is_leaf() ) {
-            if (root == null) {
-                root = new BSTNode<>(key, value);
-            } else if (key.compareTo(root.key) == 0) {
-                root.value = value;
-            } else if (key.compareTo(root.key) > 0) {
-                right = new BSTMap(key, value);
-            } else if (key.compareTo(root.key) < 0) {
-                left = new BSTMap(key, value);
-            }
+        if (!containsKey(key)) {
             size++;
-        } else if (key.compareTo(root.key) == 0) {
-            root.value = value;
-            size++;
+        }
+        if (root == null) {
+            root = new BSTNode<>(key, value);
         } else if (key.compareTo(root.key) > 0) {
-            right.put(key, value);
+            if (right == null) {
+                right = new BSTMap<>(key, value);
+            } else {
+                right.put(key, value);
+            }
         } else if (key.compareTo(root.key) < 0) {
-            left.put(key, value);
+            if (left == null) {
+                left = new BSTMap<>(key, value);
+            } else {
+                left.put(key, value);
+            }
+        } else {
+            root.value = value;
         }
     }
 
