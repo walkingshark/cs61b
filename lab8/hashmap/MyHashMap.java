@@ -37,12 +37,18 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     /** Constructors */
     public MyHashMap() {
         buckets = createTable(initialSize);
+        for (int i = 0; i < buckets.length; i++) {
+            buckets[i] = createBucket();
+        }
         size = 0;
         mset = new HashSet<>();
     }
 
     public MyHashMap(int initialSize) {
         buckets = createTable(initialSize);
+        for (int i = 0; i < buckets.length; i++) {
+            buckets[i] = createBucket();
+        }
         size = 0;
         mset = new HashSet<>();
     }
@@ -56,6 +62,9 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      */
     public MyHashMap(int initialSize, double maxLoad) {
         buckets = createTable(initialSize);
+        for (int i = 0; i < buckets.length; i++) {
+            buckets[i] = createBucket();
+        }
         loadFactor = maxLoad;
         size = 0;
         mset = new HashSet<>();
@@ -107,10 +116,15 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     // Your code won't compile until you do so!
     public void clear() {
         buckets = createTable(initialSize);
+        for (int i = 0; i < buckets.length; i++) {
+            buckets[i] = createBucket();
+        }
+        size = 0;
+        mset = new HashSet<>();
 
     }
     public boolean containsKey(K key) {
-        int index = Math.floorMod(keySet().hashCode(), size());
+        int index = Math.floorMod(key.hashCode(), buckets.length);
         for (Node cur : buckets[index]) {
             if (key.equals(cur.key)) {
                 return true;
@@ -119,7 +133,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         return false;
     }
     public V get(K key) {
-        int index = Math.floorMod(keySet().hashCode(), size());
+        int index = Math.floorMod(key.hashCode(), buckets.length);
         for (Node cur : buckets[index]) {
             if (key.equals(cur.key)) {
                 return cur.value;
@@ -137,9 +151,9 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     }
     public void put(K key, V value) {
         if ((size / buckets.length) > loadFactor) {
-            resize(size() * 2);
+            resize(buckets.length * 2);
         }
-        int index = Math.floorMod(keySet().hashCode(), size());
+        int index = Math.floorMod(key.hashCode(), buckets.length);
         for (Node cur : buckets[index]) {
             if (key.equals(cur.key)) {
                 cur.value = value;
@@ -147,6 +161,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
             }
         }
         buckets[index].add(createNode(key, value));
+        size++;
         mset.add(key);
     }
     public Set<K> keySet() {

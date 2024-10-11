@@ -3,6 +3,7 @@ package hashmap;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +24,7 @@ public class TestMyHashMap {
 
     //assumes put/size/containsKey/get work
     @Test
+
     public void sanityClearTest() {
         sanityClearTest(new MyHashMap<>());
     }
@@ -67,7 +69,18 @@ public class TestMyHashMap {
         assertNotEquals(null, b.get("KISS"));
         assertNotEquals(null, b.get("starChild"));
     }
+    @Test
+    public void sizetest() {
+        MyHashMap<String, Integer> x = new MyHashMap<>();
+        assertEquals(0, x.size());
+        x.put("hi", 1);
+        assertEquals(1, x.size());
+        for (int i = 0; i < 455; i++) {
+            x.put("hi" + i, 1);
+        }
+        assertEquals(456, x.size());
 
+    }
     // assumes put works
     @Test
     public void sanitySizeTest() {
