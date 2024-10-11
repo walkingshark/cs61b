@@ -34,11 +34,11 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     /** Constructors */
     public MyHashMap() {
-        buckets = new Collection[initialSize];
+        buckets = createTable(initialSize);
     }
 
     public MyHashMap(int initialSize) {
-        buckets = new Collection[initialSize];
+        buckets = createTable(initialSize);
     }
 
     /**
@@ -49,7 +49,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * @param maxLoad maximum load factor
      */
     public MyHashMap(int initialSize, double maxLoad) {
-        buckets = new Collection[initialSize];
+        buckets = createTable(initialSize);
         loadFactor = maxLoad;
     }
 
@@ -97,5 +97,16 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     // TODO: Implement the methods of the Map61B Interface below
     // Your code won't compile until you do so!
-
+    public void clear() {
+        buckets = createTable(initialSize);
+    }
+    public boolean containsKey(K key) {
+        int index = Math.floorMod(keySet().hashCode(), buckets.length);
+        for (Node cur : buckets[index]) {
+            if (key.equals(cur.key)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
