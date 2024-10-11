@@ -109,4 +109,13 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         }
         return false;
     }
+    public V get(K key) {
+        int index = Math.floorMod(keySet().hashCode(), buckets.length);
+        for (Node cur : buckets[index]) {
+            if (key.equals(cur.key)) {
+                return cur.value;
+            }
+        }
+        return null;
+    }
 }
