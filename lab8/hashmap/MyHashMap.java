@@ -1,7 +1,7 @@
 package hashmap;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import javax.naming.AuthenticationNotSupportedException;
+import java.util.*;
 
 /**
  *  A hash table-backed Map implementation. Provides amortized constant time
@@ -30,16 +30,21 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     private Collection<Node>[] buckets;
     private int initialSize = 16;
     private double loadFactor = 0.75;
-    private int size;
+    private int size = 0;
+    private HashSet<K> mset = new HashSet<>();
     // You should probably define some more!
 
     /** Constructors */
     public MyHashMap() {
         buckets = createTable(initialSize);
+        size = 0;
+        mset = new HashSet<>();
     }
 
     public MyHashMap(int initialSize) {
         buckets = createTable(initialSize);
+        size = 0;
+        mset = new HashSet<>();
     }
 
     /**
@@ -52,6 +57,8 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     public MyHashMap(int initialSize, double maxLoad) {
         buckets = createTable(initialSize);
         loadFactor = maxLoad;
+        size = 0;
+        mset = new HashSet<>();
     }
 
     /**
@@ -100,6 +107,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     // Your code won't compile until you do so!
     public void clear() {
         buckets = createTable(initialSize);
+
     }
     public boolean containsKey(K key) {
         int index = Math.floorMod(keySet().hashCode(), size());
@@ -139,5 +147,18 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
             }
         }
         buckets[index].add(createNode(key, value));
+        mset.add(key);
+    }
+    public Set<K> keySet() {
+        return mset;
+    }
+    public Iterator<K> iterator() {
+        return this.iterator();
+    }
+    public V remove(K key) {
+        throw new UnsupportedOperationException("not supported");
+    }
+    public V remove(K key, V value) {
+        throw new UnsupportedOperationException("not supported");
     }
 }
