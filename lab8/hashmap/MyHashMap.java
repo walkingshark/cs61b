@@ -148,6 +148,11 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         Collection<Node>[] result = createTable(newSize);
         System.arraycopy(buckets, 0, result, 0, size());
         buckets = result;
+        for (int i = size(); i < buckets.length; i++) {
+            if (buckets[i] == null) {
+                buckets[i] = createBucket();
+            }
+        }
     }
     public void put(K key, V value) {
         if ((size / buckets.length) > loadFactor) {

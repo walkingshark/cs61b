@@ -75,10 +75,15 @@ public class TestMyHashMap {
         assertEquals(0, x.size());
         x.put("hi", 1);
         assertEquals(1, x.size());
-        for (int i = 0; i < 455; i++) {
+
+        for (int i = 0; i < 31; i++) {
+            assertEquals(i+1, x.size());
             x.put("hi" + i, 1);
         }
-        assertEquals(456, x.size());
+        assertEquals(32, x.size());
+        x.put("hi" + 31, 1);
+
+
 
     }
     // assumes put works
