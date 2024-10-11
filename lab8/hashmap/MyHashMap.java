@@ -30,6 +30,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     private Collection<Node>[] buckets;
     private int initialSize = 16;
     private double loadFactor = 0.75;
+    private int size;
     // You should probably define some more!
 
     /** Constructors */
@@ -101,7 +102,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         buckets = createTable(initialSize);
     }
     public boolean containsKey(K key) {
-        int index = Math.floorMod(keySet().hashCode(), buckets.length);
+        int index = Math.floorMod(keySet().hashCode(), size());
         for (Node cur : buckets[index]) {
             if (key.equals(cur.key)) {
                 return true;
@@ -110,12 +111,33 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         return false;
     }
     public V get(K key) {
-        int index = Math.floorMod(keySet().hashCode(), buckets.length);
+        int index = Math.floorMod(keySet().hashCode(), size());
         for (Node cur : buckets[index]) {
             if (key.equals(cur.key)) {
                 return cur.value;
             }
         }
         return null;
+    }
+    public int size() {
+        return size;
+    }
+    protected void resize(int newSize) {
+        Collection<Node>[] result = createTable(newSize);
+        System.arraycopy(buckets, 0, result, 0, size());
+        buckets = result;
+    }
+    public void put(K key, V value) {
+        if ((size / buckets.length) > loadFactor) {
+            resize(size() * 2);
+        }
+        int index = Math.floorMod(keySet().hashCode(), size());
+        for (Node cur : buckets[index]) {
+            if (key.equals(cur.key)) {
+                cur.value = value;
+                return;
+            }
+        }
+        buckets[index].add(createNode(key, value));
     }
 }
