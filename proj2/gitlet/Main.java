@@ -21,4 +21,8 @@ public class Main {
             // TODO: FILL THE REST IN
         }
     }
+    // create a repo and make a commit
+    public static void init() {
+
+    }
 }
