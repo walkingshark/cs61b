@@ -21,6 +21,20 @@ public class Commit {
 
     /** The message of this Commit. */
     private String message;
+    private Date time;
 
     /* TODO: fill in the rest of this class. */
+
+    public Commit(String message) {
+        this.message = message;
+        if (message.equals("initial commit")) {
+            this.time = new Date(0);
+        } else {
+            this.time = new Date();
+        }
+    }
+    // Commit constructor for pointer like branch, head
+    public Commit() {
+        this.message = "this is a dummy commit";
+    }
 }

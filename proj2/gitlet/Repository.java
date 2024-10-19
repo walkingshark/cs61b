@@ -1,6 +1,9 @@
 package gitlet;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import static gitlet.Utils.*;
 
 // TODO: any imports you need here
@@ -22,13 +25,13 @@ public class Repository {
     // A commit tree
     // but what data structures does this use?
     // Is it a tree?
-
+    HashMap<String, Commit> commits = new HashMap<>();
     // how to actually represent pointer?
 
     // branch pointer
-
+    Commit branch = new Commit();
     // head pointer
-
+    Commit head = new Commit();
     // some blobs
 
     // blob pointer
@@ -48,9 +51,9 @@ public class Repository {
     // how to properly represent date?
     public Repository() {
         //set up a new repo(copy from lab6)
-        if (!GITLET_DIR.exists()) {
-            GITLET_DIR.mkdir();
-        }
+        GITLET_DIR.mkdir();
+        Commit initialCommit = new Commit("initial commit");
+        commits.put(sha1(initialCommit), initialCommit);
     }
     /** this is probably the commit command and since I'm still working on
     init, probably should add first commit in a easier way.*/
