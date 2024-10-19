@@ -1,6 +1,7 @@
 package gitlet;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -53,7 +54,12 @@ public class Repository {
         //set up a new repo(copy from lab6)
         GITLET_DIR.mkdir();
         Commit initialCommit = new Commit("initial commit");
-        commits.put(sha1(initialCommit), initialCommit);
+        String id = sha1(serialize(initialCommit)); // there's a bug
+        commits.put(id, initialCommit);
+        File commitFile = join(GITLET_DIR, id);
+        File treeFile = join(GITLET_DIR, "commitTree");
+        writeObject(commitFile, initialCommit);
+        writeObject(treeFile, treeFile);
     }
     /** this is probably the commit command and since I'm still working on
     init, probably should add first commit in a easier way.*/
