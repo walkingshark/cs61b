@@ -40,7 +40,7 @@ public class Repository {
     // parent pointer
 
     // staging area(2)
-    StagingArea area;
+
     /** The current working directory. */
     public static final File CWD = new File(System.getProperty("user.dir"));
     /** The .gitlet directory. */
@@ -68,7 +68,7 @@ public class Repository {
     }
     // the add command
     public static void add(String filename) {
-        File copy = join(CWD, filename);
+        File copy = join(StagingArea.Ad, filename);
 
 
     }
