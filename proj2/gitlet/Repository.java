@@ -40,6 +40,7 @@ public class Repository {
     // parent pointer
 
     // staging area(2)
+    StagingArea area;
     /** The current working directory. */
     public static final File CWD = new File(System.getProperty("user.dir"));
     /** The .gitlet directory. */
@@ -52,14 +53,24 @@ public class Repository {
     // how to properly represent date?
     public Repository() {
         //set up a new repo(copy from lab6)
-        GITLET_DIR.mkdir();
-        Commit initialCommit = new Commit("initial commit");
-        String id = sha1(serialize(initialCommit)); // there's a bug
-        commits.put(id, initialCommit);
-        File commitFile = join(GITLET_DIR, id);
-        File treeFile = join(GITLET_DIR, "commitTree");
-        writeObject(commitFile, initialCommit);
-        writeObject(treeFile, treeFile);
+        if (!GITLET_DIR.exists()) {
+            GITLET_DIR.mkdir();
+            Commit initialCommit = new Commit("initial commit");
+            String id = sha1(serialize(initialCommit));
+            commits.put(id, initialCommit);
+            File commitFile = join(GITLET_DIR, id);
+            File treeFile = join(GITLET_DIR, "commitTree");
+            writeObject(commitFile, initialCommit);
+            writeObject(treeFile, commits);
+        } else {
+            System.out.println("A Gitlet version-control system already exists in the current directory.");
+        }
+    }
+    // the add command
+    public static void add(String filename) {
+        File copy = join(CWD, filename);
+
+
     }
     /** this is probably the commit command and since I'm still working on
     init, probably should add first commit in a easier way.*/
