@@ -11,8 +11,10 @@ public class Blob {
     public File blobs = join(GITLET_DIR, "blobs");
     public File content;
     public String id;
-    public Blob() {
+    public String name;
+    public Blob(String filename) {
         // read and write
+        name = filename;
         String s = readContentsAsString(CWD);
         id = sha1(s);
         content = join(blobs, id);
