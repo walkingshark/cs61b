@@ -4,21 +4,33 @@
 
 ## Classes and Data Structures
 
-### Class 1
+### Repository
 
 #### Fields
 
-1. Field 1
+1. staging area(add)
+2. staging area(remove)
+3. some commit tree
+4. master pointer
+5. head pointer
+6. some blobs
+
+
+### staging area(add)
+staging an already exist file -> overwrite the older version
+in .gitlet
+#### Fields
+
+1. pointer to blob(from itai's slide)
 2. Field 2
 
-
-### Class 2
+### blob
 
 #### Fields
 
-1. Field 1
-2. Field 2
+### commit
 
+#### Fields
 
 ## Algorithms
 
