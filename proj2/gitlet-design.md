@@ -1,6 +1,10 @@
 # Gitlet Design Document
 
 **Name**:
+## Designing
+1. what data?
+2. how to store data?
+3. when to store?
 
 ## Classes and Data Structures
 
@@ -17,15 +21,20 @@
 
 
 ### staging area(add)
-staging an already exist file -> overwrite the older version
+#### staging an already exist file -> overwrite the older version
 in .gitlet
+#### how to know if a file already exists?
+#### build a map: file name to current file sha1 id, and with id, find a version of
+a file (blob)
+
 #### Fields
 
-1. pointer to blob(from itai's slide)
+1. 
 2. Field 2
 
 ### blob
 content of a file
+maybe inside a folder name of its sha1 code so that it's easier to find
 #### Fields
 
 ### commit
