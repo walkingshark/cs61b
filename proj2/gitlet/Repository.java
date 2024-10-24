@@ -68,7 +68,8 @@ public class Repository {
     }
     // the add command
     public static void add(String filename) {
-        File copy = join(StagingArea.Ad, filename);
+
+        StagingArea.Ad.put(filename, )
 
 
     }

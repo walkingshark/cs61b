@@ -35,6 +35,10 @@ a file (blob)
 ### blob
 content of a file
 maybe inside a folder name of its sha1 code so that it's easier to find
+
+### blobs
+a directory contains blobs
+blobs/sha id(name of a blob)
 #### Fields
 
 ### commit
@@ -59,7 +63,9 @@ refs: (folder) heads, remote, tags
 11. logs: head(a bunch of commit), refs->(head(main, master(ids), remotes)
 12. objects: a bunch of sha1 folders(inside of it are 2 sha1), info, pack(those 2 idk)
 ## Algorithms
-
+### Add
+add a new blob
+update staging area
 
 ## Persistence
 
