@@ -33,19 +33,20 @@ public class Repository {
     Commit branch = new Commit();
     // head pointer
     Commit head = new Commit();
-    // some blobs
 
     // blob pointer
 
     // parent pointer
 
-    // staging area(2)
-
     /** The current working directory. */
     public static final File CWD = new File(System.getProperty("user.dir"));
     /** The .gitlet directory. */
     public static final File GITLET_DIR = join(CWD, ".gitlet");
-
+    // some blobs
+    public static final File BLOBS = join(GITLET_DIR, "blobs");
+    // staging area(2)
+    public static final File ADD = join(GITLET_DIR, "add");
+    public static final File REMOVE = join(GITLET_DIR, "remove");
     /* TODO: fill in the rest of this class. */
     // init method in Main calls this constructor to get a new repo.
     // What's a repo?
@@ -55,6 +56,7 @@ public class Repository {
         //set up a new repo(copy from lab6)
         if (!GITLET_DIR.exists()) {
             GITLET_DIR.mkdir();
+            BLOBS.mkdir();
             Commit initialCommit = new Commit("initial commit");
             String id = sha1(serialize(initialCommit));
             commits.put(id, initialCommit);

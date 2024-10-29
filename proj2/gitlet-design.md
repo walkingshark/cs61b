@@ -62,6 +62,13 @@ refs: (folder) heads, remote, tags
     heads: main master (sha1 codes)
 11. logs: head(a bunch of commit), refs->(head(main, master(ids), remotes)
 12. objects: a bunch of sha1 folders(inside of it are 2 sha1), info, pack(those 2 idk)
+## gitlet structure
+repo
+    commit tree
+        commit
+    staging area
+    blobs
+        blob
 ## Algorithms
 ### Add
 add a new blob
