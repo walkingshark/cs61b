@@ -46,6 +46,7 @@ public class Repository {
     public static final File BLOBS = join(GITLET_DIR, "blobs");
     // staging area(2)
     public static final File ADD = join(GITLET_DIR, "add");
+    public HashMap<String, String> add = new HashMap<>();
     public static final File REMOVE = join(GITLET_DIR, "remove");
     /* TODO: fill in the rest of this class. */
     // init method in Main calls this constructor to get a new repo.
@@ -70,7 +71,15 @@ public class Repository {
     }
     // the add command
     public static void add(String filename) {
-        
+        /**
+         * if current version == version in commit:
+         *     if already in stagingAdd:
+         *         delete
+         * else:
+         *     map[filename] = sha1 id
+         *if file in stagingRm:
+         *    rm it
+         *  */
 
 
     }
