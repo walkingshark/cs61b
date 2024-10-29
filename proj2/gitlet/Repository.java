@@ -70,8 +70,7 @@ public class Repository {
     }
     // the add command
     public static void add(String filename) {
-
-        StagingArea.Ad.put(filename, )
+        
 
 
     }
