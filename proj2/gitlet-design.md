@@ -44,6 +44,9 @@ blobs/sha id(name of a blob)
 ### commit
 point to blobs.
 #### Fields
+meta datas
+a reference to tree(?)
+a reference to parent
 
 ## git structure
 1. COMMIT_EDITMSG: last commit message

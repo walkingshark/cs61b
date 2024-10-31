@@ -48,6 +48,7 @@ public class Repository {
     public static final File ADD = join(GITLET_DIR, "add");
     public HashMap<String, String> add = new HashMap<>();
     public static final File REMOVE = join(GITLET_DIR, "remove");
+    public HashMap<String, String> remove = new HashMap<>();
     /* TODO: fill in the rest of this class. */
     // init method in Main calls this constructor to get a new repo.
     // What's a repo?
@@ -80,7 +81,16 @@ public class Repository {
          *if file in stagingRm:
          *    rm it
          *  */
-
+        if (sha1(file) == sha1(commit.filename)) {
+            if (add.containsKey(filename)) {
+                add.remove(filename);
+            }
+        } else {
+            add.put(filename, sha1(file));
+        }
+        if (remove.containsKey(filename)) {
+            remove.remove(filename);
+        }
 
     }
     /** this is probably the commit command and since I'm still working on
