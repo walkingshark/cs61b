@@ -76,6 +76,10 @@ repo
 ### Add
 add a new blob
 update staging area
-
+### commit
+use add and rm to update commit
+rm: untrack a file in commit
+1. staging area is cleared after commit
+2. the commit just added become currrent commit and is added to the commit tree
 ## Persistence
 

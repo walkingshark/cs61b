@@ -4,6 +4,7 @@ package gitlet;
 
 import java.io.Serializable;
 import java.util.Date; // TODO: You'll likely use this in this class
+import java.util.HashMap;
 
 /** Represents a gitlet commit object.
  *  TODO: It's a good idea to give a description here of what else this Class
@@ -23,7 +24,9 @@ public class Commit implements Serializable {
     /** The message of this Commit. */
     private String message;
     private Date time;
-
+    public HashMap<String, String> version = new HashMap<>();
+    // parent's sha1 id, probably need a map from sha1 to commit
+    public String parent;
     /* TODO: fill in the rest of this class. */
 
     public Commit(String message) {

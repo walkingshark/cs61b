@@ -70,6 +70,9 @@ public class Repository {
             System.out.println("A Gitlet version-control system already exists in the current directory.");
         }
     }
+    public String getId(File f) {
+        return sha1(readContents(f));
+    }
     // the add command
     public static void add(String filename) {
         /**
@@ -81,7 +84,14 @@ public class Repository {
          *if file in stagingRm:
          *    rm it
          *  */
-        if (sha1(file) == sha1(commit.filename)) {
+
+        // how to find a certain file?
+        // should I pass in file or filename?
+        /** ans: pass in filename, and file must be in cwd because otherwise
+         * can't find a certain file(which means cwd changes)*/
+        File f = join(CWD, filename);
+        // how to represent current commit?
+        if (sha1(f) == sha1(commit.filename)) {
             if (add.containsKey(filename)) {
                 add.remove(filename);
             }
