@@ -29,8 +29,9 @@ public class Repository {
     HashMap<String, Commit> commits = new HashMap<>();
     // how to actually represent pointer?
 
-    public HashMap<String, String> commitPointers = new HashMap<>();
-
+    // public HashMap<String, String> commitPointers = new HashMap<>();
+    String head;
+    String master;
     // blob pointer
 
     // parent pointer
@@ -61,8 +62,8 @@ public class Repository {
             commits.put(id, initialCommit);
             File commitFile = join(GITLET_DIR, id);
             File treeFile = join(GITLET_DIR, "commitTree");
-            commitPointers.put("head", getId(initialCommit));
-            commitPointers.put("master", getId(initialCommit));
+            head = getId(initialCommit);
+            master = getId(initialCommit);
             writeObject(commitFile, initialCommit);
             writeObject(treeFile, commits);
         } else {
