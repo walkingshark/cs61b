@@ -44,15 +44,15 @@ public class Repository {
     public static final File BLOBS = join(GITLET_DIR, "blobs");
     // staging area(2)
     public static final File ADD = join(GITLET_DIR, "add");
-    public HashMap<String, String> add = new HashMap<>();
+    public static HashMap<String, String> add = new HashMap<>();
     public static final File REMOVE = join(GITLET_DIR, "remove");
-    public HashMap<String, String> remove = new HashMap<>();
+    public static HashMap<String, String> remove = new HashMap<>();
     /* TODO: fill in the rest of this class. */
     // init method in Main calls this constructor to get a new repo.
     // What's a repo?
     // make cwd a gitlet repo
     // how to properly represent date?
-    public Repository() {
+    public static void init() {
         //set up a new repo(copy from lab6)
         if (!GITLET_DIR.exists()) {
             GITLET_DIR.mkdir();
@@ -70,10 +70,10 @@ public class Repository {
             System.out.println("A Gitlet version-control system already exists in the current directory.");
         }
     }
-    public String getId(File f) {
+    public static String getId(File f) {
         return sha1(readContents(f));
     }
-    public String getId(Commit c) {
+    public static String getId(Commit c) {
         return sha1(serialize(c));
     }
     // the add command
@@ -94,13 +94,13 @@ public class Repository {
          * can't find a certain file(which means cwd changes)*/
         File f = join(CWD, filename);
         // how to represent current commit-> kinda fixed
-        // should repo be instantiated?
+        // should repo be instantiated? ans: no
         if (sha1(f) == sha1(commits.get(head))) {
             if (add.containsKey(filename)) {
                 add.remove(filename);
             }
         } else {
-            add.put(filename, sha1(file));
+            add.put(filename, sha1(f));
         }
         if (remove.containsKey(filename)) {
             remove.remove(filename);

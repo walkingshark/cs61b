@@ -22,12 +22,12 @@ public class Main {
         switch(firstArg) {
             case "init":
                 // TODO: handle the `init` command
-                Repository thisRepo = new Repository();
+                Repository.init();
                 break;
             case "add":
                 // TODO: handle the `add [filename]` command
                 if (GITLET_DIR.exists()) {
-                    thisRepo.add(args[1]);
+                    Repository.add(args[1]);
                 }
                 break;
             // TODO: FILL THE REST IN
