@@ -26,12 +26,12 @@ public class Repository {
     // A commit tree
     // but what data structures does this use?
     // Is it a tree?
-    HashMap<String, Commit> commits = new HashMap<>();
+    public static HashMap<String, Commit> commits = new HashMap<>();
     // how to actually represent pointer?
 
     // public HashMap<String, String> commitPointers = new HashMap<>();
-    String head;
-    String master;
+    public static String head;
+    public static String master;
     // blob pointer
 
     // parent pointer
@@ -93,8 +93,9 @@ public class Repository {
         /** ans: pass in filename, and file must be in cwd because otherwise
          * can't find a certain file(which means cwd changes)*/
         File f = join(CWD, filename);
-        // how to represent current commit?
-        if (sha1(f) == sha1(commit.filename)) {
+        // how to represent current commit-> kinda fixed
+        // should repo be instantiated?
+        if (sha1(f) == sha1(commits.get(head))) {
             if (add.containsKey(filename)) {
                 add.remove(filename);
             }
