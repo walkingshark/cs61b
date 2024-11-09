@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.util.Date; // TODO: You'll likely use this in this class
 import java.util.HashMap;
 
+import static gitlet.Repository.head;
+
 /** Represents a gitlet commit object.
  *  TODO: It's a good idea to give a description here of what else this Class
  *  does at a high level.
@@ -36,10 +38,9 @@ public class Commit implements Serializable {
             this.time = new Date(0);
         } else {
             this.time = new Date();
+            this.parent = head;
+            this.version = Repository.commits.get(parent).version;
         }
     }
-    // Commit constructor for pointer like branch, head
-    public Commit() {
-        this.message = "this is a dummy commit";
-    }
+
 }

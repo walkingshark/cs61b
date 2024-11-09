@@ -47,6 +47,9 @@ public class Repository {
     public static HashMap<String, String> add = new HashMap<>();
     public static final File REMOVE = join(GITLET_DIR, "remove");
     public static HashMap<String, String> remove = new HashMap<>();
+    public static final File HEAD = join(GITLET_DIR, "head");
+    public static final File MASTER = join(GITLET_DIR, "master");
+    public static final File COMMIT = join(GITLET_DIR, "commit");
     /* TODO: fill in the rest of this class. */
     // init method in Main calls this constructor to get a new repo.
     // What's a repo?
@@ -107,9 +110,27 @@ public class Repository {
         }
 
     }
-    /** this is probably the commit command and since I'm still working on
-    init, probably should add first commit in a easier way.*/
-    public void addCommit() {
+    public static void commit(String message) {
+        Commit newCommit = new Commit(message);
+        for (String filename : add.keySet()) {
+            newCommit.version.put(filename, add.get(filename));
+        }
+        for (String filename : remove.keySet()) {
+            newCommit.version.remove(filename);
+        }
+        // clear staging area
+        add.clear();
+        remove.clear();
+        // add commit to commit tree
+        head = sha1(newCommit);
+        commits.put(head, newCommit);
+        // store stuff
+        writeObject(HEAD, head);
+        writeObject(MASTER, master);
+        writeObject(COMMIT, commits);
+        writeObject(ADD, add);
+        writeObject(REMOVE, remove);
 
     }
+
 }

@@ -30,7 +30,11 @@ public class Main {
                     Repository.add(args[1]);
                 }
                 break;
-            // TODO: FILL THE REST IN
+            case "commit":
+                if (GITLET_DIR.exists()) {
+                    Repository.commit(args[1]);
+                }
+                break;
         }
     }
     // create a repo and make a commit
