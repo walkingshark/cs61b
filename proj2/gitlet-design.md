@@ -73,6 +73,8 @@ repo
     blobs
         blob
 ## Algorithms
+### init 
+should create a new repo instance R, other commands should consider if R exist. This design can solve the problem that every command method in repo has to be static and stuffs it uses has to be static too.
 ### Add
 add a new blob
 update staging area
