@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
 import static gitlet.Utils.*;
 
 // TODO: any imports you need here
@@ -44,6 +45,7 @@ public class Repository {
     public static final File BLOBS = join(GITLET_DIR, "blobs");
 
     // staging area(2)
+    public static HashMap<String, String> initial = new HashMap<>();
     // a file, contains the "add" map
     public static File ADD = join(GITLET_DIR, "add");
     public static HashMap<String, String> add = new HashMap<>();
@@ -67,6 +69,11 @@ public class Repository {
         if (!GITLET_DIR.exists()) {
             GITLET_DIR.mkdir();
             BLOBS.mkdir();
+
+            initial.put("a", "b");
+            add = initial;
+            remove = initial;
+
             Commit initialCommit = new Commit("initial commit");
             String id = sha1(serialize(initialCommit));
             commits.put(id, initialCommit);
@@ -147,6 +154,9 @@ public class Repository {
          * */
         // how to check if sth already read or not?
         // maybe initialize sth
+        if (add.equals(initial)) {
+            // read sth
+        }
         if (commits.get(head).version.containsKey(filename)) {
             remove.put(filename, add.get(filename));
         }

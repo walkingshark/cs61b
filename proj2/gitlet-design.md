@@ -85,6 +85,10 @@ use add and rm to update commit
 rm: untrack a file in commit
 1. staging area is cleared after commit
 2. the commit just added become currrent commit and is added to the commit tree
+### need to distinguish between file and directory
 ## Persistence
 ### how to store data?
+how to check if sth already read or not?
+if it hasn't read or just clear
+
 
