@@ -40,16 +40,23 @@ public class Repository {
     public static final File CWD = new File(System.getProperty("user.dir"));
     /** The .gitlet directory. */
     public static final File GITLET_DIR = join(CWD, ".gitlet");
-    // some blobs
+    // a folder, contains several blobs, filename is blob's sha1 id
     public static final File BLOBS = join(GITLET_DIR, "blobs");
+
     // staging area(2)
-    public static final File ADD = join(GITLET_DIR, "add");
+    // a file, contains the "add" map
+    public static File ADD = join(GITLET_DIR, "add");
     public static HashMap<String, String> add = new HashMap<>();
-    public static final File REMOVE = join(GITLET_DIR, "remove");
+    // a file, contains the "remove" map
+    public static  File REMOVE = join(GITLET_DIR, "remove");
     public static HashMap<String, String> remove = new HashMap<>();
+    // files, contains a sha id
     public static final File HEAD = join(GITLET_DIR, "head");
     public static final File MASTER = join(GITLET_DIR, "master");
+
+    // folder, contains a file for "commit" map, a file for each commit(name: id),
     public static final File COMMIT = join(GITLET_DIR, "commit");
+    public static File commitMap = join(COMMIT, "commitMap");
     /* TODO: fill in the rest of this class. */
     // init method in Main calls this constructor to get a new repo.
     // What's a repo?
@@ -127,10 +134,25 @@ public class Repository {
         // store stuff
         writeObject(HEAD, head);
         writeObject(MASTER, master);
-        writeObject(COMMIT, commits);
+        writeObject(commitMap, commits);
         writeObject(ADD, add);
         writeObject(REMOVE, remove);
+    }
+    public static void rm(String filename) {
+        /**
+         * if file is staged for addition:
+         *  unstage
+         *  if file is tracked in current commit:
+         *      stage the file for removal and delete file in the cwd
+         * */
+        // how to check if sth already read or not?
+        // maybe initialize sth
+        if (commits.get(head).version.containsKey(filename)) {
+            remove.put(filename, add.get(filename));
+        }
+        if (add.containsKey(filename)) {
+            add.remove(filename);
+        }
 
     }
-
 }

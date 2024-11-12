@@ -35,6 +35,11 @@ public class Main {
                     Repository.commit(args[1]);
                 }
                 break;
+            case "rm":
+                if (GITLET_DIR.exists()) {
+                    Repository.rm(args[1]);
+                }
+                break;
         }
     }
     // create a repo and make a commit

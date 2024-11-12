@@ -67,6 +67,7 @@ refs: (folder) heads, remote, tags
 12. objects: a bunch of sha1 folders(inside of it are 2 sha1), info, pack(those 2 idk)
 ## gitlet structure
 repo
+    commit folder
     commit tree
         commit
     staging area
@@ -85,4 +86,5 @@ rm: untrack a file in commit
 1. staging area is cleared after commit
 2. the commit just added become currrent commit and is added to the commit tree
 ## Persistence
+### how to store data?
 
