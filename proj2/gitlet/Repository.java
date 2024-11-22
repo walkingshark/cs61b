@@ -156,6 +156,7 @@ public class Repository {
         // maybe initialize sth
         if (add.equals(initial)) {
             // read sth
+            readObject(ADD, HashMap.class);
         }
         if (commits.get(head).version.containsKey(filename)) {
             remove.put(filename, add.get(filename));

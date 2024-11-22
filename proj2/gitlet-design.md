@@ -90,5 +90,8 @@ rm: untrack a file in commit
 ### how to store data?
 how to check if sth already read or not?
 if it hasn't read or just clear
+ans: for add and remove in staging area, they are first set to a initial map.
+when doing operations like add and rm, first check whether add or rm map is equal to initial.
+if so, read from file.
 
 
