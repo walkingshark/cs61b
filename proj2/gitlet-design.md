@@ -46,7 +46,7 @@ point to blobs.
 #### Fields
 meta datas
 a reference to tree(?)
-a reference to parent
+a reference to parent, a commit might have 2 parents(doc says so)(because of merge), so added a second string called parent2
 
 ## git structure
 1. COMMIT_EDITMSG: last commit message

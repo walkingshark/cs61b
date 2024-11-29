@@ -164,6 +164,18 @@ public class Repository {
         if (add.containsKey(filename)) {
             add.remove(filename);
         }
+        //store stuff
+        writeObject(ADD, add);
+        writeObject(REMOVE, remove);
 
+    }
+    public static void log() {
+        /** start from the head commit, print every commit to the initial commit.
+         * notice that log only prints a single line, it doesn't print the whole branch.
+         * when a commit has 2 or more parents, choose the first parent, and add a line about merging.
+         *  */
+         //read stuff
+         // somehow iterate from head to initial and print stuff
+         //store stuff
     }
 }
