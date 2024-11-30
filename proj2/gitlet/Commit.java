@@ -28,7 +28,6 @@ public class Commit implements Serializable {
     private Date time;
     // filenames to blob's id
     public HashMap<String, String> version = new HashMap<>();
-    // parent's sha1 id, probably need a map from sha1 to commit
     public String parent;
     public String parent2;
     /* TODO: fill in the rest of this class. */

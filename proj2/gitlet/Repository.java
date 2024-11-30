@@ -28,7 +28,7 @@ public class Repository {
     // but what data structures does this use?
     // Is it a tree?
     public static HashMap<String, Commit> commits = new HashMap<>();
-    // how to actually represent pointer?
+    //sha id-->commit
 
     // public HashMap<String, String> commitPointers = new HashMap<>();
     public static String head;
@@ -45,7 +45,6 @@ public class Repository {
     public static final File BLOBS = join(GITLET_DIR, "blobs");
 
     // staging area(2)
-    public static HashMap<String, String> initial = new HashMap<>();
     // a file, contains the "add" map
     public static File ADD = join(GITLET_DIR, "add");
     public static HashMap<String, String> add = new HashMap<>();
@@ -69,10 +68,6 @@ public class Repository {
         if (!GITLET_DIR.exists()) {
             GITLET_DIR.mkdir();
             BLOBS.mkdir();
-
-            initial.put("a", "b");
-            add = initial;
-            remove = initial;
 
             Commit initialCommit = new Commit("initial commit");
             String id = sha1(serialize(initialCommit));
@@ -125,7 +120,7 @@ public class Repository {
 
     }
     public static void commit(String message) {
-        Commit newCommit = new Commit(message);
+        Commit newCommit = new Commit(message); //NEED to copy its parent first
         for (String filename : add.keySet()) {
             newCommit.version.put(filename, add.get(filename));
         }
@@ -154,7 +149,11 @@ public class Repository {
          * */
         // how to check if sth already read or not?
         // maybe initialize sth
-        if (add.equals(initial)) {
+        if (add.isEmpty()) {
+            /** if a map is empty
+             * 1 haven't read stuff --> read from file
+             * 2 just got cleared, should already wrote to file, so the file is empty
+             * --> read file*/
             // read sth
             readObject(ADD, HashMap.class);
         }
@@ -175,6 +174,7 @@ public class Repository {
          * when a commit has 2 or more parents, choose the first parent, and add a line about merging.
          *  */
          //read stuff
+
          // somehow iterate from head to initial and print stuff
          //store stuff
     }
