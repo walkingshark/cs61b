@@ -28,6 +28,10 @@ public class Repository {
     // but what data structures does this use?
     // Is it a tree?
     public static HashMap<String, Commit> commits = new HashMap<>();
+    /**Maintain a runtime map between these strings and the runtime objects they refer to.
+     * You create and fill in this map while Gitlet is running, but never read or write it to a file.
+     * */
+    //finding a certain commit can be done by using "join", after deserliazing, put it in a runtime map
     //sha id-->commit
 
     // public HashMap<String, String> commitPointers = new HashMap<>();
@@ -121,6 +125,10 @@ public class Repository {
     }
     public static void commit(String message) {
         Commit newCommit = new Commit(message); //NEED to copy its parent first
+        // copy from parent
+        File h = join(COMMIT, head);
+        // notice that already this point need to deal with serialization again
+        if (commits.containsKey())
         for (String filename : add.keySet()) {
             newCommit.version.put(filename, add.get(filename));
         }
