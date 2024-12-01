@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Date; // TODO: You'll likely use this in this class
 import java.util.HashMap;
 
-import static gitlet.Repository.head;
+//import static gitlet.Repository.head;
 
 /** Represents a gitlet commit object.
  *  TODO: It's a good idea to give a description here of what else this Class
@@ -32,14 +32,16 @@ public class Commit implements Serializable {
     public String parent2;
     /* TODO: fill in the rest of this class. */
 
-    public Commit(String message) {
+    public Commit(String message, String head, Commit parentCommit) {
         this.message = message;
         if (message.equals("initial commit")) {
             this.time = new Date(0);
         } else {
             this.time = new Date();
+            //where should I deal with persistence? in repo.java or commit constructor? --> try the first one
+            //use of commits(map) need to be deal with
             this.parent = head;
-            this.version = Repository.commits.get(parent).version;
+            this.version = parentCommit.version;
         }
     }
 

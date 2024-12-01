@@ -59,9 +59,8 @@ public class Repository {
     public static final File HEAD = join(GITLET_DIR, "head");
     public static final File MASTER = join(GITLET_DIR, "master");
 
-    // folder, contains a file for "commit" map, a file for each commit(name: id),
+    // folder, contains a file for each commit(name: id),
     public static final File COMMIT = join(GITLET_DIR, "commit");
-    public static File commitMap = join(COMMIT, "commitMap");
     /* TODO: fill in the rest of this class. */
     // init method in Main calls this constructor to get a new repo.
     // What's a repo?
@@ -123,12 +122,28 @@ public class Repository {
         }
 
     }
+    // load head or master
+    private static String loadString(String s) {
+        if (s.isEmpty()) {
+            File f = join(COMMIT, s);
+            s = readObject(f, String.class);
+        }
+        return s;
+    }
+    private static Commit getCommit(String s) {
+        if (commits.containsKey(s)) {
+            return commits.get(s);
+        } else {
+            File f = join(COMMIT, s);
+            Commit c = readObject(f, Commit.class);
+            commits.put(s, c);
+            return c;
+        }
+    }
     public static void commit(String message) {
-        Commit newCommit = new Commit(message); //NEED to copy its parent first
-        // copy from parent
-        File h = join(COMMIT, head);
-        // notice that already this point need to deal with serialization again
-        if (commits.containsKey())
+        head = loadString("head");
+        Commit newCommit = new Commit(message, head, getCommit(head));// already copy its parent in the constructor
+
         for (String filename : add.keySet()) {
             newCommit.version.put(filename, add.get(filename));
         }
@@ -144,7 +159,6 @@ public class Repository {
         // store stuff
         writeObject(HEAD, head);
         writeObject(MASTER, master);
-        writeObject(commitMap, commits);
         writeObject(ADD, add);
         writeObject(REMOVE, remove);
     }
