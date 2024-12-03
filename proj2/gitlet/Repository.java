@@ -122,7 +122,7 @@ public class Repository {
         }
 
     }
-    // load head or master
+    // persistence(load) head or master
     private static String loadString(String s) {
         if (s.isEmpty()) {
             File f = join(COMMIT, s);
@@ -130,6 +130,7 @@ public class Repository {
         }
         return s;
     }
+    // persistence(load) for commit
     private static Commit getCommit(String s) {
         if (commits.containsKey(s)) {
             return commits.get(s);
@@ -162,6 +163,23 @@ public class Repository {
         writeObject(ADD, add);
         writeObject(REMOVE, remove);
     }
+    // persistence(load) for add
+
+    /** if a map is empty
+     * 1 haven't read stuff --> read from file
+     * 2 just got cleared, should already wrote to file, so the file is empty
+     * --> read file*/
+    private static void getAdd() {
+        if (add.isEmpty()) {
+            readObject(ADD, HashMap.class);
+        }
+    }
+    // persistence(load) for remove
+    private static void getRemove() {
+        if (remove.isEmpty()) {
+            readObject(REMOVE, HashMap.class);
+        }
+    }
     public static void rm(String filename) {
         /**
          * if file is staged for addition:
@@ -171,14 +189,8 @@ public class Repository {
          * */
         // how to check if sth already read or not?
         // maybe initialize sth
-        if (add.isEmpty()) {
-            /** if a map is empty
-             * 1 haven't read stuff --> read from file
-             * 2 just got cleared, should already wrote to file, so the file is empty
-             * --> read file*/
-            // read sth
-            readObject(ADD, HashMap.class);
-        }
+        getAdd();
+        getRemove();
         if (commits.get(head).version.containsKey(filename)) {
             remove.put(filename, add.get(filename));
         }
@@ -196,8 +208,15 @@ public class Repository {
          * when a commit has 2 or more parents, choose the first parent, and add a line about merging.
          *  */
          //read stuff
+         loadString("head");
 
-         // somehow iterate from head to initial and print stuff
-         //store stuff
+         Commit currentCommit = getCommit(head);
+         while (!currentCommit.message.equals("initial commit")) {
+             // print a commit
+             currentCommit = getCommit(currentCommit.parent);
+         }
+         //print initial commit
+         //store stuff(didn't change anything so no need)
+
     }
 }

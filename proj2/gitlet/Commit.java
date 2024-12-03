@@ -24,8 +24,8 @@ public class Commit implements Serializable {
      */
 
     /** The message of this Commit. */
-    private String message;
-    private Date time;
+    public String message;
+    public Date time;
     // filenames to blob's id
     public HashMap<String, String> version = new HashMap<>();
     public String parent;
