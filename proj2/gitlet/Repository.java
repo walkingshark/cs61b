@@ -34,12 +34,9 @@ public class Repository {
     //finding a certain commit can be done by using "join", after deserliazing, put it in a runtime map
     //sha id-->commit
 
-    // public HashMap<String, String> commitPointers = new HashMap<>();
+    public HashMap<String, String> pointers = new HashMap<>();
     public static String head;
     public static String master;
-    // blob pointer
-
-    // parent pointer
 
     /** The current working directory. */
     public static final File CWD = new File(System.getProperty("user.dir"));
@@ -102,14 +99,7 @@ public class Repository {
          *if file in stagingRm:
          *    rm it
          *  */
-
-        // how to find a certain file?
-        // should I pass in file or filename?
-        /** ans: pass in filename, and file must be in cwd because otherwise
-         * can't find a certain file(which means cwd changes)*/
         File f = join(CWD, filename);
-        // how to represent current commit-> kinda fixed
-        // should repo be instantiated? ans: no
         if (sha1(f) == sha1(commits.get(head))) {
             if (add.containsKey(filename)) {
                 add.remove(filename);
@@ -251,6 +241,7 @@ public class Repository {
     }
     public static void branch(String branch_name) {
         /** add a new pointer to head commit*/
+        //maybe add a map for pointers because there might be more than head and master.
     }
     public static void rm_branch(String branch_name) {
         /** remove a branch pointer*/
