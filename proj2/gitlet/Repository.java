@@ -219,4 +219,49 @@ public class Repository {
          //store stuff(didn't change anything so no need)
 
     }
+    public static void global_log() {
+        /**Like log, but displays information about all commits.
+         *  The order does not matter.
+         *  Hint: use plainFilenamesIn in Utils to iterate over files within a directory.
+         * */
+
+    }
+    public static void find(String message) {
+        /** Prints out the ids of all commits that have the given commit message, one per line.
+         *  Hint: the hint for this command is the same as the one for global-log.
+         * */
+    }
+    public static void status() {
+        /** display branches, the current branches is added a *.
+         * display files that are staged for addition, removed(in dictionary order)
+         * Ignore any subdirectories that may have been introduced, since Gitlet does not deal with them.(?)
+         * */
+    }
+    public static void checkout() {
+        /** has three versions of it.
+         * 1. java gitlet.Main checkout -- [file name]
+         * update the file in cdw from the head commit(this changed is not staged)
+         * 2. java gitlet.Main checkout [commit id] -- [file name]
+         * similar to 1., but find commit with given id
+         * 3. java gitlet.Main checkout [branch name]
+         * update cdw with latest commit of given branch, files that aren't in branch->delete
+         * clear staged area(with some conditions)
+         * ! need to implement connvient search for commit ids(abbreviated id)
+         * */
+    }
+    public static void branch(String branch_name) {
+        /** add a new pointer to head commit*/
+    }
+    public static void rm_branch(String branch_name) {
+        /** remove a branch pointer*/
+    }
+    public static void reset(String id) {
+        /** The command is essentially checkout of an arbitrary commit that also changes the current branch head.*/
+    }
+    public static void merge(String branch_name) {
+        /** */
+    }
+
+
+
 }
