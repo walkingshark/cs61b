@@ -34,9 +34,9 @@ public class Repository {
     //finding a certain commit can be done by using "join", after deserliazing, put it in a runtime map
     //sha id-->commit
 
-    public HashMap<String, String> pointers = new HashMap<>();
+    public static HashMap<String, String> branches = new HashMap<>();
     public static String head;
-    public static String master;
+    //public static String master; // combine with branches
 
     /** The current working directory. */
     public static final File CWD = new File(System.getProperty("user.dir"));
@@ -54,14 +54,10 @@ public class Repository {
     public static HashMap<String, String> remove = new HashMap<>();
     // files, contains a sha id
     public static final File HEAD = join(GITLET_DIR, "head");
-    public static final File MASTER = join(GITLET_DIR, "master");
-
+    //public static final File MASTER = join(GITLET_DIR, "master");
+    public static final File BRANCHES = join(GITLET_DIR, "branches");
     // folder, contains a file for each commit(name: id),
     public static final File COMMIT = join(GITLET_DIR, "commit");
-    /* TODO: fill in the rest of this class. */
-    // init method in Main calls this constructor to get a new repo.
-    // What's a repo?
-    // make cwd a gitlet repo
     // how to properly represent date?
     public static void init() {
         //set up a new repo(copy from lab6)
@@ -70,14 +66,14 @@ public class Repository {
             BLOBS.mkdir();
 
             Commit initialCommit = new Commit("initial commit");
-            String id = sha1(serialize(initialCommit));
-            commits.put(id, initialCommit);
-            File commitFile = join(GITLET_DIR, id);
-            File treeFile = join(GITLET_DIR, "commitTree");
-            head = getId(initialCommit);
-            master = getId(initialCommit);
+            String initialId = getId(initialCommit);
+            branches.put("master", initialId);
+            head = "master";
+            commits.put(initialId, initialCommit);
+            File commitFile = join(GITLET_DIR, initialId);
             writeObject(commitFile, initialCommit);
-            writeObject(treeFile, commits);
+            writeObject(HEAD, head);
+            writeObject(BRANCHES, branches);
         } else {
             System.out.println("A Gitlet version-control system already exists in the current directory.");
         }
@@ -171,12 +167,7 @@ public class Repository {
         }
     }
     public static void rm(String filename) {
-        /**
-         * if file is staged for addition:
-         *  unstage
-         *  if file is tracked in current commit:
-         *      stage the file for removal and delete file in the cwd
-         * */
+
         // how to check if sth already read or not?
         // maybe initialize sth
         getAdd();
@@ -193,10 +184,7 @@ public class Repository {
 
     }
     public static void log() {
-        /** start from the head commit, print every commit to the initial commit.
-         * notice that log only prints a single line, it doesn't print the whole branch.
-         * when a commit has 2 or more parents, choose the first parent, and add a line about merging.
-         *  */
+
          //read stuff
          loadString("head");
 
@@ -210,10 +198,7 @@ public class Repository {
 
     }
     public static void global_log() {
-        /**Like log, but displays information about all commits.
-         *  The order does not matter.
-         *  Hint: use plainFilenamesIn in Utils to iterate over files within a directory.
-         * */
+
 
     }
     public static void find(String message) {
@@ -241,7 +226,6 @@ public class Repository {
     }
     public static void branch(String branch_name) {
         /** add a new pointer to head commit*/
-        //maybe add a map for pointers because there might be more than head and master.
     }
     public static void rm_branch(String branch_name) {
         /** remove a branch pointer*/

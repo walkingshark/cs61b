@@ -33,16 +33,14 @@ public class Commit implements Serializable {
     /* TODO: fill in the rest of this class. */
 
     public Commit(String message, String head, Commit parentCommit) {
+        this.time = new Date();
         this.message = message;
-        if (message.equals("initial commit")) {
-            this.time = new Date(0);
-        } else {
-            this.time = new Date();
-            //where should I deal with persistence? in repo.java or commit constructor? --> try the first one
-            //use of commits(map) need to be deal with
-            this.parent = head;
-            this.version = parentCommit.version;
-        }
+        this.parent = head;
+        this.version = parentCommit.version;
+    }
+    public Commit(String message) {
+        this.message = message;
+        this.time = new Date(0);
     }
 
 }
