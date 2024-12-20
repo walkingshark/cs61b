@@ -96,7 +96,9 @@ public class Repository {
          *    rm it
          *  */
         File f = join(CWD, filename);
-        if (sha1(f) == sha1(commits.get(head))) {
+        getAdd();
+        getRemove();
+        if (sha1(f) == sha1(commits.get(branches.get(head)))) {
             if (add.containsKey(filename)) {
                 add.remove(filename);
             }
@@ -106,15 +108,21 @@ public class Repository {
         if (remove.containsKey(filename)) {
             remove.remove(filename);
         }
+        writeObject(ADD, add);
+        writeObject(REMOVE, remove);
 
     }
-    // persistence(load) head or master
-    private static String loadString(String s) {
-        if (s.isEmpty()) {
-            File f = join(COMMIT, s);
-            s = readObject(f, String.class);
+    // persistence(load) head or
+    private static void getHead() {
+        if (head.isEmpty()) {
+            head = readObject(join(COMMIT, "head"), String.class);
         }
-        return s;
+
+    }
+    private static void getBranches() {
+        if (branches.isEmpty()) {
+            branches = readObject(join(BRANCHES, "branches"), HashMap.class);
+        }
     }
     // persistence(load) for commit
     private static Commit getCommit(String s) {
@@ -123,13 +131,18 @@ public class Repository {
         } else {
             File f = join(COMMIT, s);
             Commit c = readObject(f, Commit.class);
+            // notice that "commits" is a runtime map
             commits.put(s, c);
             return c;
         }
     }
     public static void commit(String message) {
-        head = loadString("head");
-        Commit newCommit = new Commit(message, head, getCommit(head));// already copy its parent in the constructor
+        getHead();
+        getBranches();
+        getAdd();
+        getRemove();
+        String headID = branches.get(head);
+        Commit newCommit = new Commit(message, headID, getCommit(headID));// already copy its parent in the constructor
 
         for (String filename : add.keySet()) {
             newCommit.version.put(filename, add.get(filename));
@@ -141,11 +154,11 @@ public class Repository {
         add.clear();
         remove.clear();
         // add commit to commit tree
-        head = sha1(newCommit);
+        branches.put(head, sha1(newCommit));
         commits.put(head, newCommit);
         // store stuff
         writeObject(HEAD, head);
-        writeObject(MASTER, master);
+        writeObject(BRANCHES, branches);
         writeObject(ADD, add);
         writeObject(REMOVE, remove);
     }
