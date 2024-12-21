@@ -84,7 +84,9 @@ In order to know which branch is head, head is now a branch name, first set to "
 the head always points to branch pointer(in gitlet)
 add a map called branches(branch name to commit id)
 ## Persistence
-### how to store data?
+createnewfile() needs exception handle, and in lab6, it seems like no need to create a new file myself
+because when writing to a file(e.g. writeobject), a file is created or overwrite if needed
+but this also cause some trouble(if I don't have to append sth it's probably fine)
 
 
 

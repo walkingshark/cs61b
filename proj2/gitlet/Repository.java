@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.List;
 
 import static gitlet.Utils.*;
 
@@ -53,9 +53,9 @@ public class Repository {
     public static  File REMOVE = join(GITLET_DIR, "remove");
     public static HashMap<String, String> remove = new HashMap<>();
     // files, contains a sha id
-    public static final File HEAD = join(GITLET_DIR, "head");
+    public static File HEAD = join(GITLET_DIR, "head");
     //public static final File MASTER = join(GITLET_DIR, "master");
-    public static final File BRANCHES = join(GITLET_DIR, "branches");
+    public static File BRANCHES = join(GITLET_DIR, "branches");
     // folder, contains a file for each commit(name: id),
     public static final File COMMIT = join(GITLET_DIR, "commit");
     // how to properly represent date?
@@ -64,13 +64,13 @@ public class Repository {
         if (!GITLET_DIR.exists()) {
             GITLET_DIR.mkdir();
             BLOBS.mkdir();
-
+            COMMIT.mkdir();
             Commit initialCommit = new Commit("initial commit");
             String initialId = getId(initialCommit);
             branches.put("master", initialId);
             head = "master";
             commits.put(initialId, initialCommit);
-            File commitFile = join(GITLET_DIR, initialId);
+            File commitFile = join(COMMIT, initialId);
             writeObject(commitFile, initialCommit);
             writeObject(HEAD, head);
             writeObject(BRANCHES, branches);
@@ -143,7 +143,7 @@ public class Repository {
         getRemove();
         String headID = branches.get(head);
         Commit newCommit = new Commit(message, headID, getCommit(headID));// already copy its parent in the constructor
-
+        // update so that now the new commit differs its parent
         for (String filename : add.keySet()) {
             newCommit.version.put(filename, add.get(filename));
         }
@@ -154,13 +154,15 @@ public class Repository {
         add.clear();
         remove.clear();
         // add commit to commit tree
-        branches.put(head, sha1(newCommit));
-        commits.put(head, newCommit);
+        String newCommitID = getId(newCommit);
+        branches.put(head, newCommitID);
+        commits.put(newCommitID, newCommit);
         // store stuff
         writeObject(HEAD, head);
         writeObject(BRANCHES, branches);
         writeObject(ADD, add);
         writeObject(REMOVE, remove);
+        writeObject(join(COMMIT, newCommitID), newCommit);
     }
     // persistence(load) for add
 
@@ -196,41 +198,38 @@ public class Repository {
         writeObject(REMOVE, remove);
 
     }
+    public static void print_commit(String commitID) {
+        Commit currentCommit = getCommit(commitID);
+        String s = String.format("%1$ta %1$tb %1$te %1$tT %1$tY %1$tz", currentCommit.time);// the date is in chinese, might need to fix
+        System.out.println("===");
+        System.out.println("commit " + commitID);
+        if (!currentCommit.parent2.isEmpty()) {
+            System.out.println("Merge: " + currentCommit.parent.substring(0, 7) + currentCommit.parent2.substring(0, 7));
+        }
+        System.out.println(s);
+        System.out.println(currentCommit.message);
+        System.out.println();
+    }
     public static void log() {
-
          //read stuff
          getHead();
-
-
          String currentCommitID = branches.get(head);
          Commit currentCommit = getCommit(currentCommitID);
          while (!currentCommit.message.equals("initial commit")) {
              // print a commit
              currentCommitID = currentCommit.parent;
-             currentCommit = getCommit(currentCommitID);
-             String s = String.format("%1$ta %1$tb %1$te %1$tT %1$tY %1$tz", currentCommit.time);// the date is in chinese, might need to fix
-             System.out.println("===");
-             System.out.println("commit " + currentCommitID);
-             if (!currentCommit.parent2.isEmpty()) {
-                 System.out.println("Merge: " + currentCommit.parent.substring(0, 7) + currentCommit.parent2.substring(0, 7));
-             }
-             System.out.println(s);
-             System.out.println(currentCommit.message);
-             System.out.println();
-             // if have 2 parents, add sth about merging
+             print_commit(currentCommitID);
          }
          //print initial commit
-        System.out.println("===");
-        System.out.println("commit " + currentCommitID);
-        String s = String.format("%1$ta %1$tb %1$te %1$tT %1$tY %1$tz", currentCommit.time);
-        System.out.println(s);
-        System.out.println(currentCommit.message);
+         print_commit(currentCommitID);
          //store stuff(didn't change anything so no need)
 
     }
     public static void global_log() {
-
-
+        List<String> commit_names = plainFilenamesIn(COMMIT);
+        for (String name : commit_names) {
+            print_commit(name);
+        }
     }
     public static void find(String message) {
         /** Prints out the ids of all commits that have the given commit message, one per line.
