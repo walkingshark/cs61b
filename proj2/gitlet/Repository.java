@@ -199,14 +199,32 @@ public class Repository {
     public static void log() {
 
          //read stuff
-         loadString("head");
+         getHead();
 
-         Commit currentCommit = getCommit(head);
+
+         String currentCommitID = branches.get(head);
+         Commit currentCommit = getCommit(currentCommitID);
          while (!currentCommit.message.equals("initial commit")) {
              // print a commit
-             currentCommit = getCommit(currentCommit.parent);
+             currentCommitID = currentCommit.parent;
+             currentCommit = getCommit(currentCommitID);
+             String s = String.format("%1$ta %1$tb %1$te %1$tT %1$tY %1$tz", currentCommit.time);// the date is in chinese, might need to fix
+             System.out.println("===");
+             System.out.println("commit " + currentCommitID);
+             if (!currentCommit.parent2.isEmpty()) {
+                 System.out.println("Merge: " + currentCommit.parent.substring(0, 7) + currentCommit.parent2.substring(0, 7));
+             }
+             System.out.println(s);
+             System.out.println(currentCommit.message);
+             System.out.println();
+             // if have 2 parents, add sth about merging
          }
          //print initial commit
+        System.out.println("===");
+        System.out.println("commit " + currentCommitID);
+        String s = String.format("%1$ta %1$tb %1$te %1$tT %1$tY %1$tz", currentCommit.time);
+        System.out.println(s);
+        System.out.println(currentCommit.message);
          //store stuff(didn't change anything so no need)
 
     }

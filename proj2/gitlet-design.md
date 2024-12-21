@@ -43,6 +43,8 @@ maybe inside a folder name of its sha1 code so that it's easier to find
 #### Fields
 meta datas
 2 strings represent parents
+parent: the commit that you're on when merging
+parent2: the other commit
 a map storing blobs
 
 
