@@ -95,15 +95,17 @@ public class Repository {
          *if file in stagingRm:
          *    rm it
          *  */
-        File f = join(CWD, filename);
         getAdd();
         getRemove();
-        if (sha1(f) == sha1(commits.get(branches.get(head)))) {
+        String fileID = getId(join(CWD, filename));
+        if (fileID.equals(commits.get(branches.get(head)).version.get(filename))) {
             if (add.containsKey(filename)) {
                 add.remove(filename);
             }
-        } else {
-            add.put(filename, sha1(f));
+        } else if (!fileID.equals(add.get(filename))){ // a file has changed since last add
+            add.put(filename, fileID);
+            // create blob
+            Blob newBlob = new Blob(filename);
         }
         if (remove.containsKey(filename)) {
             remove.remove(filename);

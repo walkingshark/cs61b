@@ -8,7 +8,7 @@ public class Blob {
     public static final File CWD = new File(System.getProperty("user.dir"));
     /** The .gitlet directory. */
     public static final File GITLET_DIR = join(CWD, ".gitlet");
-    public static final File blobs = join(GITLET_DIR, "blobs");
+    public static final File BLOBS = join(GITLET_DIR, "blobs");
 
     public File content;
     public String id;
@@ -18,7 +18,7 @@ public class Blob {
         name = filename;
         String s = readContentsAsString(CWD);
         id = sha1(s);
-        content = join(blobs, id);
+        content = join(BLOBS, id);
         writeContents(content, s);
     }
 }
