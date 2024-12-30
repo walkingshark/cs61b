@@ -2,9 +2,7 @@ package gitlet;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static gitlet.Utils.*;
 
@@ -34,7 +32,7 @@ public class Repository {
     //finding a certain commit can be done by using "join", after deserliazing, put it in a runtime map
     //sha id-->commit
 
-    public static HashMap<String, String> branches = new HashMap<>();
+    public static TreeMap<String, String> branches = new HashMap<>();
     public static String head;
     //public static String master; // combine with branches
 
@@ -123,7 +121,7 @@ public class Repository {
     }
     private static void getBranches() {
         if (branches.isEmpty()) {
-            branches = readObject(join(BRANCHES, "branches"), HashMap.class);
+            branches = readObject(join(BRANCHES, "branches"), TreeMap.class);
         }
     }
     // persistence(load) for commit
@@ -233,16 +231,57 @@ public class Repository {
             print_commit(name);
         }
     }
-    public static void find(String message) {
+    public static void find(String commit_message) {
         /** Prints out the ids of all commits that have the given commit message, one per line.
          *  Hint: the hint for this command is the same as the one for global-log.
          * */
+        List<String> commit_names = plainFilenamesIn(COMMIT);
+        for (String currentCommitID : commit_names) {
+            Commit currentCommit = getCommit(currentCommitID);
+            if (currentCommit.message.equals(commit_message)) {
+                System.out.println(currentCommitID);
+            }
+        }
+
+
+
     }
     public static void status() {
         /** display branches, the current branches is added a *.
          * display files that are staged for addition, removed(in dictionary order)
          * Ignore any subdirectories that may have been introduced, since Gitlet does not deal with them.(?)
          * */
+        getHead();
+        getAdd();
+        getRemove();
+        getBranches();
+        System.out.println("=== Branches ===");
+        System.out.println("*" + head);
+        for (Map.Entry<String, String> entry : branches.entrySet()) {
+            String branch = entry.getKey();
+            if (branch != head) {
+                //print branches in lexicographic oreder
+                System.out.println(branch);
+            }
+        }
+        System.out.println();
+        for (Map.Entry<String, String> entry : add.entrySet()) {
+            String file = entry.getKey();
+            if (file != head) {
+                //print branches in lexicographic oreder
+                System.out.println(file);
+            }
+        }
+        System.out.println();
+        for (Map.Entry<String, String> entry : remove.entrySet()) {
+            String file = entry.getKey();
+            if (file != head) {
+                //print branches in lexicographic oreder
+                System.out.println(file);
+            }
+        }
+        System.out.println();
+
     }
     public static void checkout() {
         /** has three versions of it.
