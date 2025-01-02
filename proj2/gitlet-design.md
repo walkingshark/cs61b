@@ -83,6 +83,19 @@ In order to know which branch is head, head is now a branch name, first set to "
 (Originally head is set to a commit id)
 the head always points to branch pointer(in gitlet)
 add a map called branches(branch name to commit id)
+
+### checkout
+/** has three versions of it.
+* 1. java gitlet.Main checkout -- [file name]
+* update the file in cdw from the head commit(this changed is not staged)
+* 2. java gitlet.Main checkout [commit id] -- [file name]
+* similar to 1., but find commit with given id
+* 3. java gitlet.Main checkout [branch name]
+* update cdw with latest commit of given branch, files that aren't in branch->delete
+* clear staged area(with some conditions)
+* ! need to implement connvient search for commit ids(abbreviated id)
+* */
+! gitlet assumes a flat file system, so accessing a file with join(cwd, filename) should be fine
 ## Persistence
 createnewfile() needs exception handle, and in lab6, it seems like no need to create a new file myself
 because when writing to a file(e.g. writeobject), a file is created or overwrite if needed

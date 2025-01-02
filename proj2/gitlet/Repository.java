@@ -246,6 +246,7 @@ public class Repository {
 
 
     }
+
     public static void status() {
         /** display branches, the current branches is added a *.
          * display files that are staged for addition, removed(in dictionary order)
@@ -267,33 +268,54 @@ public class Repository {
         System.out.println();
         for (Map.Entry<String, String> entry : add.entrySet()) {
             String file = entry.getKey();
-            if (file != head) {
-                //print branches in lexicographic oreder
-                System.out.println(file);
-            }
+            //print branches in lexicographic oreder
+            System.out.println(file);
         }
         System.out.println();
         for (Map.Entry<String, String> entry : remove.entrySet()) {
             String file = entry.getKey();
-            if (file != head) {
-                //print branches in lexicographic oreder
-                System.out.println(file);
-            }
+            //print branches in lexicographic oreder
+            System.out.println(file);
         }
         System.out.println();
 
     }
-    public static void checkout() {
-        /** has three versions of it.
-         * 1. java gitlet.Main checkout -- [file name]
-         * update the file in cdw from the head commit(this changed is not staged)
-         * 2. java gitlet.Main checkout [commit id] -- [file name]
-         * similar to 1., but find commit with given id
-         * 3. java gitlet.Main checkout [branch name]
-         * update cdw with latest commit of given branch, files that aren't in branch->delete
-         * clear staged area(with some conditions)
-         * ! need to implement connvient search for commit ids(abbreviated id)
-         * */
+    public static void checkout1(String filename) {
+    getHead();
+    TreeMap<String, String> file_versions = commits.get(branches.get(head)).version;
+    String blob_id = file_versions.get(filename);
+    writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id)));
+
+    }
+    public static void checkout2(String commitID, String filename) {
+        List<String> commit_names = plainFilenamesIn(COMMIT);
+        for (String name : commit_names) { // name = commit id
+            if (name.substring(0, 6).equals(commitID)) {
+                TreeMap<String, String> file_versions = commits.get(name).version;
+                String blob_id = file_versions.get(filename);
+                writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id)));
+                break;
+            }
+        }
+    }
+    public static void checkout3(String branch_name) {
+        getBranches();
+        getHead();
+        TreeMap<String, String> file_versions = commits.get(branches.get(branch_name)).version;
+        TreeMap<String, String> head_file_versions = commits.get(branches.get(head)).version;
+        for (Map.Entry<String, String> entry : file_versions.entrySet()) {
+            String filename = entry.getKey();
+            String blob_id = entry.getValue();
+            writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id)));
+        }
+        for (Map.Entry<String, String> entry : head_file_versions.entrySet()) {
+            String filename = entry.getKey();
+            String blob_id = entry.getValue();
+            if (!file_versions.containsKey(filename)) {
+                restrictedDelete(filename);
+            }
+        }
+        head = branch_name;
     }
     public static void branch(String branch_name) {
         /** add a new pointer to head commit*/

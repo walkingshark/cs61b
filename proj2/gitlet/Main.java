@@ -39,6 +39,16 @@ public class Main {
                 if (GITLET_DIR.exists()) {
                     Repository.rm(args[1]);
                 }
+            case "checkout":
+                if (GITLET_DIR.exists()) {
+                    if (args.length == 3) {
+                        Repository.checkout1(args[2]);
+                    } else if (args.length == 4) {
+                        Repository.checkout2(args[1], args[3]);
+                    } else {
+                        Repository.checkout3(args[1]);
+                    }
+                }
                 break;
         }
     }

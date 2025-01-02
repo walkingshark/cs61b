@@ -5,6 +5,7 @@ package gitlet;
 import java.io.Serializable;
 import java.util.Date; // TODO: You'll likely use this in this class
 import java.util.HashMap;
+import java.util.TreeMap;
 
 //import static gitlet.Repository.head;
 
@@ -27,7 +28,7 @@ public class Commit implements Serializable {
     public String message;
     public Date time;
     // filenames to blob's id
-    public HashMap<String, String> version = new HashMap<>();
+    public TreeMap<String, String> version = new TreeMap<>();
     public String parent;
     public String parent2;
     /* TODO: fill in the rest of this class. */
