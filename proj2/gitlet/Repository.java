@@ -25,14 +25,14 @@ public class Repository {
     // A commit tree
     // but what data structures does this use?
     // Is it a tree?
-    public static HashMap<String, Commit> commits = new HashMap<>();
+    public static TreeMap<String, Commit> commits = new TreeMap<>();
     /**Maintain a runtime map between these strings and the runtime objects they refer to.
      * You create and fill in this map while Gitlet is running, but never read or write it to a file.
      * */
     //finding a certain commit can be done by using "join", after deserliazing, put it in a runtime map
     //sha id-->commit
 
-    public static TreeMap<String, String> branches = new HashMap<>();
+    public static TreeMap<String, String> branches = new TreeMap<>();
     public static String head;
     //public static String master; // combine with branches
 
@@ -121,7 +121,7 @@ public class Repository {
     }
     private static void getBranches() {
         if (branches.isEmpty()) {
-            branches = readObject(join(BRANCHES, "branches"), TreeMap.class);
+            branches = (TreeMap<String, String>) readObject(join(BRANCHES, "branches"), TreeMap.class);
         }
     }
     // persistence(load) for commit
@@ -303,6 +303,13 @@ public class Repository {
         getHead();
         TreeMap<String, String> file_versions = commits.get(branches.get(branch_name)).version;
         TreeMap<String, String> head_file_versions = commits.get(branches.get(head)).version;
+        List<String> cwd_file_names = plainFilenamesIn(CWD);
+        for (String filename : cwd_file_names) {
+            if ((!head_file_versions.containsKey(filename)) && (!file_versions.containsKey(filename))) {
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                System.exit(0);
+            }
+        }
         for (Map.Entry<String, String> entry : file_versions.entrySet()) {
             String filename = entry.getKey();
             String blob_id = entry.getValue();
