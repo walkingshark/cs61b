@@ -93,10 +93,15 @@ public class Repository {
          *if file in stagingRm:
          *    rm it
          *  */
+        List<String> file_names = plainFilenamesIn(CWD);
+        if (!file_names.contains(filename)) {
+            System.out.println("File does not exist.");
+            System.exit(0);
+        }
         getAdd();
         getRemove();
         String fileID = getId(join(CWD, filename));
-        if (fileID.equals(commits.get(branches.get(head)).version.get(filename))) {
+        if (fileID.equals(getCommit(branches.get(head)).version.get(filename))) {
             if (add.containsKey(filename)) {
                 add.remove(filename);
             }
@@ -141,6 +146,14 @@ public class Repository {
         getBranches();
         getAdd();
         getRemove();
+        if (add.isEmpty()) {
+            System.out.println("No changes added to the commit.");
+            return; // abort
+        }
+        if (message.isEmpty()) {
+            System.out.println("Please enter a commit message.");
+            return;
+        }
         String headID = branches.get(head);
         Commit newCommit = new Commit(message, headID, getCommit(headID));// already copy its parent in the constructor
         // update so that now the new commit differs its parent
@@ -187,10 +200,16 @@ public class Repository {
         // maybe initialize sth
         getAdd();
         getRemove();
-        if (commits.get(head).version.containsKey(filename)) {
+        getHead();
+        Boolean staged = add.containsKey(filename);
+        Boolean tracked = getCommit(branches.get(head)).version.containsKey(filename);
+        if (!(tracked || staged)) {
+            System.out.println("No reason to remove the file.");
+        }
+        if (tracked) {
             remove.put(filename, add.get(filename));
         }
-        if (add.containsKey(filename)) {
+        if (staged) {
             add.remove(filename);
         }
         //store stuff
@@ -282,7 +301,7 @@ public class Repository {
     }
     public static void checkout1(String filename) {
     getHead();
-    TreeMap<String, String> file_versions = commits.get(branches.get(head)).version;
+    TreeMap<String, String> file_versions = getCommit(branches.get(head)).version;
     String blob_id = file_versions.get(filename);
     writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id)));
 
@@ -291,7 +310,7 @@ public class Repository {
         List<String> commit_names = plainFilenamesIn(COMMIT);
         for (String name : commit_names) { // name = commit id
             if (name.substring(0, 6).equals(commitID)) {
-                TreeMap<String, String> file_versions = commits.get(name).version;
+                TreeMap<String, String> file_versions = getCommit(name).version;
                 String blob_id = file_versions.get(filename);
                 writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id)));
                 break;
@@ -301,8 +320,8 @@ public class Repository {
     public static void checkout3(String branch_name) {
         getBranches();
         getHead();
-        TreeMap<String, String> file_versions = commits.get(branches.get(branch_name)).version;
-        TreeMap<String, String> head_file_versions = commits.get(branches.get(head)).version;
+        TreeMap<String, String> file_versions = getCommit(branches.get(branch_name)).version;
+        TreeMap<String, String> head_file_versions = getCommit(branches.get(head)).version;
         List<String> cwd_file_names = plainFilenamesIn(CWD);
         for (String filename : cwd_file_names) {
             if ((!head_file_versions.containsKey(filename)) && (!file_versions.containsKey(filename))) {
