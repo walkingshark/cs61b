@@ -101,6 +101,8 @@ createnewfile() needs exception handle, and in lab6, it seems like no need to cr
 because when writing to a file(e.g. writeobject), a file is created or overwrite if needed
 but this also cause some trouble(if I don't have to append sth it's probably fine)
 
-!bug: getCommit() and commits.get() are different, only use getCommit() for  abstraction
 
+update:
+!bug: getCommit() and commits.get() are different, only use getCommit() for  abstraction
+test-basic_checkout goes wrong at add command
 

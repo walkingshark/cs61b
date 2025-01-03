@@ -1,6 +1,7 @@
 package gitlet;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -57,12 +58,16 @@ public class Repository {
     // folder, contains a file for each commit(name: id),
     public static final File COMMIT = join(GITLET_DIR, "commit");
     // how to properly represent date?
-    public static void init() {
+    public static void init() throws IOException {
         //set up a new repo(copy from lab6)
         if (!GITLET_DIR.exists()) {
             GITLET_DIR.mkdir();
             BLOBS.mkdir();
             COMMIT.mkdir();
+            ADD.createNewFile();
+            REMOVE.createNewFile();
+            HEAD.createNewFile();
+            BRANCHES.createNewFile();
             Commit initialCommit = new Commit("initial commit");
             String initialId = getId(initialCommit);
             branches.put("master", initialId);
@@ -185,13 +190,13 @@ public class Repository {
      * --> read file*/
     private static void getAdd() {
         if (add.isEmpty()) {
-            readObject(ADD, HashMap.class);
+            add = readObject(ADD, HashMap.class);
         }
     }
     // persistence(load) for remove
     private static void getRemove() {
         if (remove.isEmpty()) {
-            readObject(REMOVE, HashMap.class);
+            remove = readObject(REMOVE, HashMap.class);
         }
     }
     public static void rm(String filename) {
