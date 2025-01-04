@@ -16,7 +16,7 @@ public class Blob {
     public Blob(String filename) {
         // read and write
         name = filename;
-        String s = readContentsAsString(CWD);
+        String s = readContentsAsString(join(CWD, filename));
         id = sha1(s);
         content = join(BLOBS, id);
         writeContents(content, s);

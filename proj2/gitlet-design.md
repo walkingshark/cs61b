@@ -103,6 +103,5 @@ but this also cause some trouble(if I don't have to append sth it's probably fin
 
 
 update:
-!bug: getCommit() and commits.get() are different, only use getCommit() for  abstraction
 test-basic_checkout goes wrong at add command
-
+isempty() doesn't work on null

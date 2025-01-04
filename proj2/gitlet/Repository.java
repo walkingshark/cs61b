@@ -103,10 +103,14 @@ public class Repository {
             System.out.println("File does not exist.");
             System.exit(0);
         }
+        getHead();
         getAdd();
         getRemove();
+        getBranches();
         String fileID = getId(join(CWD, filename));
-        if (fileID.equals(getCommit(branches.get(head)).version.get(filename))) { // fails
+        String head_id = branches.get(head);
+        TreeMap<String, String> head_commit_version = getCommit(head_id).version;
+        if (head_commit_version.containsKey(filename) && fileID.equals(head_commit_version.get(filename))) { // fails
             if (add.containsKey(filename)) {
                 add.remove(filename);
             }
@@ -124,19 +128,19 @@ public class Repository {
     }
     // persistence(load) head or
     private static void getHead() {
-        if (head.isEmpty()) {
+        if (head == null) {
             head = readObject(HEAD, String.class);
         }
 
     }
     private static void getBranches() {
-        if (branches.isEmpty()) {
+        if (branches.isEmpty() && BRANCHES.length() != 0) {
             branches = (TreeMap<String, String>) readObject(BRANCHES, TreeMap.class);
         }
     }
     // persistence(load) for commit
     private static Commit getCommit(String s) {
-        if (commits.containsKey(s)) {
+        if (commits.containsKey(s)) { // s shouldn't be null
             return commits.get(s);
         } else {
             File f = join(COMMIT, s);
@@ -306,6 +310,7 @@ public class Repository {
     }
     public static void checkout1(String filename) {
     getHead();
+    getBranches();
     TreeMap<String, String> file_versions = getCommit(branches.get(head)).version;
     String blob_id = file_versions.get(filename);
     writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id)));
