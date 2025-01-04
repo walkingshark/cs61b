@@ -40,10 +40,12 @@ public class Main {
                 if (GITLET_DIR.exists()) {
                     Repository.rm(args[1]);
                 }
+                break;
             case "log":
                 if (GITLET_DIR.exists()) {
                     Repository.log();
                 }
+                break;
             case "checkout":
                 if (GITLET_DIR.exists()) {
                     if (args.length == 3) {

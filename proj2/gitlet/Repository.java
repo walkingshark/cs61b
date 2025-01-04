@@ -3,6 +3,7 @@ package gitlet;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static gitlet.Utils.*;
@@ -228,25 +229,30 @@ public class Repository {
     }
     public static void print_commit(String commitID) {
         Commit currentCommit = getCommit(commitID);
-        String s = String.format("%1$ta %1$tb %1$te %1$tT %1$tY %1$tz", currentCommit.time);// the date is in chinese, might need to fix
+        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy Z", Locale.ENGLISH);
+        String formattedDate = formatter.format(currentCommit.time);
+        //String s = String.format("Date: " + "%1$ta %1$tb %1$te %1$tT %1$tY %1$tz", currentCommit.time);// the date is in chinese, might need to fix
         System.out.println("===");
         System.out.println("commit " + commitID);
-        if (!currentCommit.parent2.isEmpty()) {
+        if (!(currentCommit.parent2 == null)) {
             System.out.println("Merge: " + currentCommit.parent.substring(0, 7) + currentCommit.parent2.substring(0, 7));
         }
-        System.out.println(s);
+        System.out.println("Date: " + formattedDate);
         System.out.println(currentCommit.message);
         System.out.println();
     }
     public static void log() {
          //read stuff
          getHead();
+         getBranches();
          String currentCommitID = branches.get(head);
          Commit currentCommit = getCommit(currentCommitID);
          while (!currentCommit.message.equals("initial commit")) {
              // print a commit
-             currentCommitID = currentCommit.parent;
              print_commit(currentCommitID);
+             currentCommitID = currentCommit.parent;
+             currentCommit = getCommit(currentCommitID);
+
          }
          //print initial commit
          print_commit(currentCommitID);
