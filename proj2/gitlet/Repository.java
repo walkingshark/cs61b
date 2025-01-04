@@ -106,7 +106,7 @@ public class Repository {
         getAdd();
         getRemove();
         String fileID = getId(join(CWD, filename));
-        if (fileID.equals(getCommit(branches.get(head)).version.get(filename))) {
+        if (fileID.equals(getCommit(branches.get(head)).version.get(filename))) { // fails
             if (add.containsKey(filename)) {
                 add.remove(filename);
             }
@@ -125,13 +125,13 @@ public class Repository {
     // persistence(load) head or
     private static void getHead() {
         if (head.isEmpty()) {
-            head = readObject(join(COMMIT, "head"), String.class);
+            head = readObject(HEAD, String.class);
         }
 
     }
     private static void getBranches() {
         if (branches.isEmpty()) {
-            branches = (TreeMap<String, String>) readObject(join(BRANCHES, "branches"), TreeMap.class);
+            branches = (TreeMap<String, String>) readObject(BRANCHES, TreeMap.class);
         }
     }
     // persistence(load) for commit
@@ -189,13 +189,13 @@ public class Repository {
      * 2 just got cleared, should already wrote to file, so the file is empty
      * --> read file*/
     private static void getAdd() {
-        if (add.isEmpty()) {
+        if (add.isEmpty() && ADD.length() != 0) {
             add = readObject(ADD, HashMap.class);
         }
     }
     // persistence(load) for remove
     private static void getRemove() {
-        if (remove.isEmpty()) {
+        if (remove.isEmpty() && REMOVE.length() != 0) {
             remove = readObject(REMOVE, HashMap.class);
         }
     }
