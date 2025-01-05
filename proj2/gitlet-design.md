@@ -95,6 +95,7 @@ add a map called branches(branch name to commit id)
 * clear staged area(with some conditions)
 * ! need to implement connvient search for commit ids(abbreviated id)
 * */
+
 ! gitlet assumes a flat file system, so accessing a file with join(cwd, filename) should be fine
 ## Persistence
 createnewfile() needs exception handle, and in lab6, it seems like no need to create a new file myself

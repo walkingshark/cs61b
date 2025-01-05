@@ -383,15 +383,54 @@ public class Repository {
             }
         }
         head = branch_name;
+        writeObject(HEAD, head);
     }
     public static void branch(String branch_name) {
         /** add a new pointer to head commit*/
+        getBranches();
+        getHead();
+        if (branches.containsKey(branch_name)) {
+            System.out.println("A branch with that name already exists.");
+        } else {
+            branches.put(branch_name, branches.get(head));
+            writeObject(BRANCHES, branches);
+        }
     }
     public static void rm_branch(String branch_name) {
         /** remove a branch pointer*/
+        getBranches();
+        getHead();
+        if (!branches.containsKey(branch_name)) {
+            System.out.println("A branch with that name does not exist.");
+        } else if (head.equals(branch_name)) {
+            System.out.println("Cannot remove the current branch.");
+        } else {
+            branches.remove(branch_name);
+            writeObject(BRANCHES, branches);
+        }
     }
     public static void reset(String id) {
         /** The command is essentially checkout of an arbitrary commit that also changes the current branch head.*/
+        /** Note that in Gitlet, there is no way to be in a detached head state since there is no checkout command that will move the HEAD pointer to a specific commit.
+         *  The reset command will do that, though it also moves the branch pointer.
+         *  Thus, in Gitlet, you will never be in a detached HEAD state.*/
+        // getHead(); checkout2 already do so
+        // getBranches();
+        getAdd();
+        TreeMap<String, String> tracked_files = getCommit(id).version;
+        List<String> commit_names = plainFilenamesIn(COMMIT);
+        if (!commit_names.contains(id)) {
+            System.out.println("No commit with that id exists.");
+            return;
+        }
+        for (Map.Entry<String, String> entry : tracked_files.entrySet()) {
+            String filename = entry.getKey();
+            checkout2(id, filename);
+        }
+        branches.put(head, id);
+        add.clear();
+        writeObject(ADD, add);
+        writeObject(BRANCHES, branches);
     }
     public static void merge(String branch_name) {
         /** */
