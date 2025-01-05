@@ -325,7 +325,7 @@ public class Repository {
     public static void checkout2(String commitID, String filename) {
         List<String> commit_names = plainFilenamesIn(COMMIT);
         for (String name : commit_names) { // name = commit id
-            if (name.substring(0, 6).equals(commitID)) {
+            if (name.substring(0, 6).equals(commitID.substring(0, 6))) {
                 TreeMap<String, String> file_versions = getCommit(name).version;
                 String blob_id = file_versions.get(filename);
                 writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id)));
