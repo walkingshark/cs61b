@@ -269,12 +269,17 @@ public class Repository {
         /** Prints out the ids of all commits that have the given commit message, one per line.
          *  Hint: the hint for this command is the same as the one for global-log.
          * */
+        Boolean found = false;
         List<String> commit_names = plainFilenamesIn(COMMIT);
         for (String currentCommitID : commit_names) {
             Commit currentCommit = getCommit(currentCommitID);
             if (currentCommit.message.equals(commit_message)) {
                 System.out.println(currentCommitID);
+                found = true;
             }
+        }
+        if (!found) {
+            System.out.println("Found no commit with that message.");
         }
 
 
@@ -318,8 +323,14 @@ public class Repository {
     getHead();
     getBranches();
     TreeMap<String, String> file_versions = getCommit(branches.get(head)).version;
-    String blob_id = file_versions.get(filename);
-    writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id)));
+    if (file_versions.containsKey(filename)) {
+        String blob_id = file_versions.get(filename);
+        writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id)));
+    } else {
+        System.out.println("File does not exist in that commit.");
+    }
+
+
 
     }
     public static void checkout2(String commitID, String filename) {
@@ -327,15 +338,29 @@ public class Repository {
         for (String name : commit_names) { // name = commit id
             if (name.substring(0, 6).equals(commitID.substring(0, 6))) {
                 TreeMap<String, String> file_versions = getCommit(name).version;
-                String blob_id = file_versions.get(filename);
-                writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id)));
-                break;
+                if (file_versions.containsKey(filename)) {
+                    String blob_id = file_versions.get(filename);
+                    writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id)));
+                } else {
+                    System.out.println("File does not exist in that commit.");
+                }
+                return;
             }
         }
+        System.out.println("No commit with that id exists.");
+
     }
     public static void checkout3(String branch_name) {
         getBranches();
         getHead();
+        if (!branches.containsKey(branch_name)) {
+            System.out.println("No such branch exists.");
+            return;
+        }
+        if (head.equals(branch_name)) {
+            System.out.println("No need to checkout the current branch.");
+            return;
+        }
         TreeMap<String, String> file_versions = getCommit(branches.get(branch_name)).version;
         TreeMap<String, String> head_file_versions = getCommit(branches.get(head)).version;
         List<String> cwd_file_names = plainFilenamesIn(CWD);
