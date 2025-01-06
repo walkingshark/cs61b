@@ -57,6 +57,38 @@ public class Main {
                     }
                 }
                 break;
+            case "global-log":
+                if (GITLET_DIR.exists()) {
+                    Repository.global_log();
+                }
+                break;
+            case "find":
+                if (GITLET_DIR.exists()) {
+                    Repository.find(args[1]);
+                }
+                break;
+            case "status":
+                if (GITLET_DIR.exists()) {
+                    Repository.status();
+                }
+                break;
+            case "branch":
+                if (GITLET_DIR.exists()) {
+                    Repository.branch(args[1]);
+                }
+                break;
+            case "rm-branch":
+                if (GITLET_DIR.exists()) {
+                    Repository.rm_branch(args[1]);
+                }
+                break;
+            case "reset":
+                if (GITLET_DIR.exists()) {
+                    Repository.reset(args[1]);
+                }
+                break;
+
+
         }
     }
     // create a repo and make a commit
