@@ -216,6 +216,7 @@ public class Repository {
         getAdd();
         getRemove();
         getHead();
+        getBranches();
         Boolean staged = add.containsKey(filename);
         Boolean tracked = getCommit(branches.get(head)).version.containsKey(filename);
         if (!(tracked || staged)) {
@@ -304,23 +305,29 @@ public class Repository {
         System.out.println("*" + head);
         for (Map.Entry<String, String> entry : branches.entrySet()) {
             String branch = entry.getKey();
-            if (branch != head) {
+            if (!branch.equals(head)) {
                 //print branches in lexicographic oreder
                 System.out.println(branch);
             }
         }
         System.out.println();
+        System.out.println("=== Staged Files ===");
         for (Map.Entry<String, String> entry : add.entrySet()) {
             String file = entry.getKey();
             //print branches in lexicographic oreder
             System.out.println(file);
         }
         System.out.println();
+        System.out.println("=== Removed Files ===");
         for (Map.Entry<String, String> entry : remove.entrySet()) {
             String file = entry.getKey();
             //print branches in lexicographic oreder
             System.out.println(file);
         }
+        System.out.println();
+        System.out.println("=== Modifications Not Staged For Commit ===");
+        System.out.println();
+        System.out.println("=== Untracked Files ===");
         System.out.println();
 
     }
