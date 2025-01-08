@@ -48,10 +48,10 @@ public class Repository {
     // staging area(2)
     // a file, contains the "add" map
     public static File ADD = join(GITLET_DIR, "add");
-    public static HashMap<String, String> add = new HashMap<>();
+    public static TreeMap<String, String> add = new TreeMap<>();
     // a file, contains the "remove" map
     public static  File REMOVE = join(GITLET_DIR, "remove");
-    public static HashMap<String, String> remove = new HashMap<>();
+    public static TreeMap<String, String> remove= new TreeMap<>();
     // files, contains a sha id
     public static File HEAD = join(GITLET_DIR, "head");
     //public static final File MASTER = join(GITLET_DIR, "master");
@@ -161,7 +161,7 @@ public class Repository {
         getBranches();
         getAdd();
         getRemove();
-        if (add.isEmpty()) {
+        if (add.isEmpty() && remove.isEmpty()) {
             System.out.println("No changes added to the commit.");
             return; // abort
         }
@@ -200,13 +200,13 @@ public class Repository {
      * --> read file*/
     private static void getAdd() {
         if (add.isEmpty() && ADD.length() != 0) {
-            add = readObject(ADD, HashMap.class);
+            add = readObject(ADD, TreeMap.class);
         }
     }
     // persistence(load) for remove
     private static void getRemove() {
         if (remove.isEmpty() && REMOVE.length() != 0) {
-            remove = readObject(REMOVE, HashMap.class);
+            remove = readObject(REMOVE, TreeMap.class);
         }
     }
     public static void rm(String filename) {
@@ -224,6 +224,7 @@ public class Repository {
         }
         if (tracked) {
             remove.put(filename, add.get(filename));
+            restrictedDelete(filename);
         }
         if (staged) {
             add.remove(filename);
@@ -377,7 +378,7 @@ public class Repository {
         TreeMap<String, String> head_file_versions = getCommit(branches.get(head)).version;
         List<String> cwd_file_names = plainFilenamesIn(CWD);
         for (String filename : cwd_file_names) {
-            if ((!head_file_versions.containsKey(filename)) && (!file_versions.containsKey(filename))) {
+            if ((!head_file_versions.containsKey(filename))) {
                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                 System.exit(0);
             }
@@ -429,6 +430,8 @@ public class Repository {
         // getHead(); checkout2 already do so
         // getBranches();
         getAdd();
+        getBranches();
+        getHead();
         TreeMap<String, String> tracked_files = getCommit(id).version;
         List<String> commit_names = plainFilenamesIn(COMMIT);
         if (!commit_names.contains(id)) {
