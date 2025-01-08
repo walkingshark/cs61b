@@ -59,16 +59,21 @@ public class Repository {
     // folder, contains a file for each commit(name: id),
     public static final File COMMIT = join(GITLET_DIR, "commit");
     // how to properly represent date?
-    public static void init() throws IOException {
+    public static void init() {
         //set up a new repo(copy from lab6)
         if (!GITLET_DIR.exists()) {
             GITLET_DIR.mkdir();
             BLOBS.mkdir();
             COMMIT.mkdir();
-            ADD.createNewFile();
-            REMOVE.createNewFile();
-            HEAD.createNewFile();
-            BRANCHES.createNewFile();
+            try {
+                ADD.createNewFile();
+                REMOVE.createNewFile();
+                HEAD.createNewFile();
+                BRANCHES.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
             Commit initialCommit = new Commit("initial commit");
             String initialId = getId(initialCommit);
             branches.put("master", initialId);
