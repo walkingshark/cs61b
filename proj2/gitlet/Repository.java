@@ -345,20 +345,21 @@ public class Repository {
     }
     private static String original_id(String short_id) {
         List<String> commit_names = plainFilenamesIn(COMMIT);
+        int l = short_id.length();
         for (String name : commit_names) { // name = commit id
-            if (name.substring(0, 6).equals(short_id.substring(0, 6))) {
+            if (name.substring(0, l).equals(short_id.substring(0, l))) {
                 return name; // get back the orginal length id
             }
         }
         return "error";
     }
     public static void checkout2(String commitID, String filename) {
-        if (commitID.length() <= 6) {
+        if (commitID.length() < 40) {
             commitID = original_id(commitID);
-            if (commitID.equals("error")) {
-                System.out.println("No commit with that id exists.");
-                return;
-            }
+        }
+        if (commitID.equals("error") || (!plainFilenamesIn(COMMIT).contains(commitID))) {
+            System.out.println("No commit with that id exists.");
+            return;
         }
         TreeMap<String, String> file_versions = getCommit(commitID).version;
         if (file_versions.containsKey(filename)) { // a file is present in current commit
