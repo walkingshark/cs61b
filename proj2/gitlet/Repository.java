@@ -351,9 +351,9 @@ public class Repository {
         for (String name : commit_names) { // name = commit id
             if (name.substring(0, 6).equals(commitID.substring(0, 6))) {
                 TreeMap<String, String> file_versions = getCommit(name).version;
-                if (file_versions.containsKey(filename)) {
+                if (file_versions.containsKey(filename)) { // a file is present in current commit
                     String blob_id = file_versions.get(filename);
-                    writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id)));
+                    writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id))); // write cwd files according to  commit
                 } else {
                     System.out.println("File does not exist in that commit.");
                 }
@@ -376,13 +376,7 @@ public class Repository {
         }
         TreeMap<String, String> file_versions = getCommit(branches.get(branch_name)).version;
         TreeMap<String, String> head_file_versions = getCommit(branches.get(head)).version;
-        List<String> cwd_file_names = plainFilenamesIn(CWD);
-        for (String filename : cwd_file_names) {
-            if ((!head_file_versions.containsKey(filename))) {
-                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
-                System.exit(0);
-            }
-        }
+        untracked_check(head_file_versions);
         for (Map.Entry<String, String> entry : file_versions.entrySet()) {
             String filename = entry.getKey();
             String blob_id = entry.getValue();
@@ -422,28 +416,46 @@ public class Repository {
             writeObject(BRANCHES, branches);
         }
     }
+    private static void untracked_check(TreeMap<String, String> head_file_version) {
+        List<String> cwd_file_names = plainFilenamesIn(CWD);
+        for (String filename : cwd_file_names) {
+            if ((!head_file_version.containsKey(filename))) {
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                System.exit(0);
+            }
+        }
+    }
     public static void reset(String id) {
         /** The command is essentially checkout of an arbitrary commit that also changes the current branch head.*/
         /** Note that in Gitlet, there is no way to be in a detached head state since there is no checkout command that will move the HEAD pointer to a specific commit.
          *  The reset command will do that, though it also moves the branch pointer.
          *  Thus, in Gitlet, you will never be in a detached HEAD state.*/
-        // getHead(); checkout2 already do so
-        // getBranches();
         getAdd();
         getBranches();
         getHead();
+        getRemove();
         TreeMap<String, String> tracked_files = getCommit(id).version;
         List<String> commit_names = plainFilenamesIn(COMMIT);
         if (!commit_names.contains(id)) {
             System.out.println("No commit with that id exists.");
             return;
         }
+        TreeMap<String, String> head_file_versions = getCommit(branches.get(head)).version;
+        untracked_check(head_file_versions);
         for (Map.Entry<String, String> entry : tracked_files.entrySet()) {
             String filename = entry.getKey();
             checkout2(id, filename);
         }
+        for (Map.Entry<String, String> entry : head_file_versions.entrySet()) {
+            String filename = entry.getKey();
+            if (!tracked_files.containsKey(filename)) {
+                restrictedDelete(filename);
+            }
+        }
         branches.put(head, id);
         add.clear();
+        remove.clear();
+        writeObject(REMOVE, remove);
         writeObject(ADD, add);
         writeObject(BRANCHES, branches);
     }
