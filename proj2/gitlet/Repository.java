@@ -242,7 +242,7 @@ public class Repository {
         System.out.println("===");
         System.out.println("commit " + commitID);
         if (!(currentCommit.parent2 == null)) {
-            System.out.println("Merge: " + currentCommit.parent.substring(0, 7) + currentCommit.parent2.substring(0, 7));
+            System.out.println("Merge: " + currentCommit.parent.substring(0, 6) + currentCommit.parent2.substring(0, 6));
         }
         System.out.println("Date: " + formattedDate);
         System.out.println(currentCommit.message);
@@ -333,34 +333,40 @@ public class Repository {
 
     }
     public static void checkout1(String filename) {
-    getHead();
-    getBranches();
-    TreeMap<String, String> file_versions = getCommit(branches.get(head)).version;
-    if (file_versions.containsKey(filename)) {
-        String blob_id = file_versions.get(filename);
-        writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id)));
-    } else {
-        System.out.println("File does not exist in that commit.");
+        getHead();
+        getBranches();
+        TreeMap<String, String> file_versions = getCommit(branches.get(head)).version;
+        if (file_versions.containsKey(filename)) {
+            String blob_id = file_versions.get(filename);
+            writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id)));
+        } else {
+            System.out.println("File does not exist in that commit.");
+        }
     }
-
-
-
-    }
-    public static void checkout2(String commitID, String filename) {
+    private static String original_id(String short_id) {
         List<String> commit_names = plainFilenamesIn(COMMIT);
         for (String name : commit_names) { // name = commit id
-            if (name.substring(0, 6).equals(commitID.substring(0, 6))) {
-                TreeMap<String, String> file_versions = getCommit(name).version;
-                if (file_versions.containsKey(filename)) { // a file is present in current commit
-                    String blob_id = file_versions.get(filename);
-                    writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id))); // write cwd files according to  commit
-                } else {
-                    System.out.println("File does not exist in that commit.");
-                }
+            if (name.substring(0, 6).equals(short_id.substring(0, 6))) {
+                return name; // get back the orginal length id
+            }
+        }
+        return "error";
+    }
+    public static void checkout2(String commitID, String filename) {
+        if (commitID.length() <= 6) {
+            commitID = original_id(commitID);
+            if (commitID.equals("error")) {
+                System.out.println("No commit with that id exists.");
                 return;
             }
         }
-        System.out.println("No commit with that id exists.");
+        TreeMap<String, String> file_versions = getCommit(commitID).version;
+        if (file_versions.containsKey(filename)) { // a file is present in current commit
+            String blob_id = file_versions.get(filename);
+            writeContents(join(CWD, filename), readContents(join(BLOBS, blob_id))); // write cwd files according to  commit
+        } else {
+            System.out.println("File does not exist in that commit.");
+        }
 
     }
     public static void checkout3(String branch_name) {
@@ -376,7 +382,13 @@ public class Repository {
         }
         TreeMap<String, String> file_versions = getCommit(branches.get(branch_name)).version;
         TreeMap<String, String> head_file_versions = getCommit(branches.get(head)).version;
-        untracked_check(head_file_versions);
+        List<String> files = plainFilenamesIn(CWD);
+        for (String filename : files) {
+            // if a file is untracked in current branch and would be overwritten
+            if (!istracked(filename) && file_versions.containsKey(filename)) {
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+            }
+        }
         for (Map.Entry<String, String> entry : file_versions.entrySet()) {
             String filename = entry.getKey();
             String blob_id = entry.getValue();
@@ -384,7 +396,6 @@ public class Repository {
         }
         for (Map.Entry<String, String> entry : head_file_versions.entrySet()) {
             String filename = entry.getKey();
-            String blob_id = entry.getValue();
             if (!file_versions.containsKey(filename)) {
                 restrictedDelete(filename);
             }
@@ -416,13 +427,15 @@ public class Repository {
             writeObject(BRANCHES, branches);
         }
     }
-    private static void untracked_check(TreeMap<String, String> head_file_version) {
-        List<String> cwd_file_names = plainFilenamesIn(CWD);
-        for (String filename : cwd_file_names) {
-            if ((!head_file_version.containsKey(filename))) {
-                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
-                System.exit(0);
-            }
+    private static boolean istracked(String filename) { // need to modify
+        getAdd();
+        getHead();
+        getBranches();
+        TreeMap<String, String> head_file_version = getCommit(branches.get(head)).version;
+        if (head_file_version.containsKey(filename) || add.containsKey(filename)) {
+            return true;
+        } else {
+            return false;
         }
     }
     public static void reset(String id) {
@@ -434,21 +447,29 @@ public class Repository {
         getBranches();
         getHead();
         getRemove();
-        TreeMap<String, String> tracked_files = getCommit(id).version;
+
         List<String> commit_names = plainFilenamesIn(COMMIT);
         if (!commit_names.contains(id)) {
             System.out.println("No commit with that id exists.");
             return;
         }
+        TreeMap<String, String> this_commit_version = getCommit(id).version;
         TreeMap<String, String> head_file_versions = getCommit(branches.get(head)).version;
-        untracked_check(head_file_versions);
-        for (Map.Entry<String, String> entry : tracked_files.entrySet()) {
+        List<String> files = plainFilenamesIn(CWD);
+        for (String filename : files) {
+            // if a file is untracked in current branch and would be overwritten
+            if (!istracked(filename) && this_commit_version.containsKey(filename)) {
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+            }
+        }
+        for (Map.Entry<String, String> entry : this_commit_version.entrySet()) {
             String filename = entry.getKey();
             checkout2(id, filename);
         }
+        //remove tracked files that are not present in that commit
         for (Map.Entry<String, String> entry : head_file_versions.entrySet()) {
             String filename = entry.getKey();
-            if (!tracked_files.containsKey(filename)) {
+            if (!this_commit_version.containsKey(filename)) {
                 restrictedDelete(filename);
             }
         }
