@@ -248,18 +248,25 @@ public class Repository {
         System.out.println(currentCommit.message);
         System.out.println();
     }
+    private static List<String> getCommitChain(String currentCommitID) {
+        List<String> chain = new ArrayList<>();
+        Commit currentCommit = getCommit(currentCommitID);
+        while (!currentCommit.message.equals("initial commit")) {
+            chain.add(currentCommitID);
+            currentCommitID = currentCommit.parent;
+            currentCommit = getCommit(currentCommitID);
+        }
+        chain.add(currentCommitID);
+        return chain;
+    }
     public static void log() {
          //read stuff
          getHead();
          getBranches();
          String currentCommitID = branches.get(head);
-         Commit currentCommit = getCommit(currentCommitID);
-         while (!currentCommit.message.equals("initial commit")) {
-             // print a commit
-             print_commit(currentCommitID);
-             currentCommitID = currentCommit.parent;
-             currentCommit = getCommit(currentCommitID);
-
+         List<String> commitChain = getCommitChain(currentCommitID);
+         for (String commit_id : commitChain) {
+             print_commit(commit_id);
          }
          //print initial commit
          print_commit(currentCommitID);
@@ -483,6 +490,26 @@ public class Repository {
     }
     public static void merge(String branch_name) {
         /** */
+        String split_point;
+        getBranches();
+        getHead();
+        String head_id = branches.get(head);
+        String branch_id = branches.get(branch_name);
+        List<String> headChain = getCommitChain(head_id);
+        List<String> branchChain = getCommitChain(branch_id);
+        for (String commit_id : headChain) {
+            if (branchChain.contains(commit_id)) {
+                split_point = commit_id;
+                break;
+            }
+        }
+        if (split_point.equals(head_id)) {
+
+        } else if (split_point.equals(branch_id)) {
+
+        } else {
+            
+        }
     }
 
 
