@@ -490,13 +490,14 @@ public class Repository {
     }
     public static void merge(String branch_name) {
         /** */
-        String split_point;
+        String split_point = "";
         getBranches();
         getHead();
         String head_id = branches.get(head);
         String branch_id = branches.get(branch_name);
-        List<String> headChain = getCommitChain(head_id);
+        List<String> headChain = getCommitChain(head_id); // from latest to initial commit
         List<String> branchChain = getCommitChain(branch_id);
+        // find split point
         for (String commit_id : headChain) {
             if (branchChain.contains(commit_id)) {
                 split_point = commit_id;
@@ -504,12 +505,36 @@ public class Repository {
             }
         }
         if (split_point.equals(head_id)) {
-
+            checkout3(branch_name);
+            System.out.println("Current branch fast-forwarded.");
+            return;
         } else if (split_point.equals(branch_id)) {
-
+            System.out.println("Given branch is an ancestor of the current branch.");
+            return;
         } else {
-            
+            // any file:
+            /**
+            if (ismodified(branch, filename) && !ismodified(head, filename)){
+                checkout2(branch_id, filename);
+                add(filename);
+             } else if (ismodified(head, filename) && !ismodified(branch, filename)) {
+                // do nothing
+             } else if (file in head == file in branch) {
+                // do nothing
+             } else if (!split_point_commit.contianskey(filename) && !head_commit.contianskey(filename)) {
+                // checkput and staged(what type of checkout?)
+             } else if (!split_point_commit.contianskey(filename) && !branch_commit.contianskey(filename)){
+                // do nothing
+             } else if (split_point_commit.contianskey(filename) && !ismodified(head, filename) && isabscent(branch, fileanme) {
+                //remove
+                //untrack
+             } else if (split_point_commit.contianskey(filename) && !ismodified(branch, filename) && isabscent(head, fileanme)) {
+                // do nothing
+             } else {
+                // conflicted, overwrite the file with two versions
+             }*/
         }
+        // do stuff
     }
 
 
