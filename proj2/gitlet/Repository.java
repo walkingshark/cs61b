@@ -488,6 +488,16 @@ public class Repository {
         writeObject(ADD, add);
         writeObject(BRANCHES, branches);
     }
+    private static boolean ismodified(String split_id, String branch_id, String filename) {
+        // check if a file is modified since split point
+        String split_content = getCommit(split_id).version.get(filename);
+        String branch_content = getCommit(branch_id).version.get(filename);
+        if (split_content.equals(branch_content)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
     public static void merge(String branch_name) {
         /** */
         String split_point = "";
@@ -504,6 +514,8 @@ public class Repository {
                 break;
             }
         }
+        TreeMap<String, String> head_version = getCommit(head_id).version;
+        TreeMap<String, String> branch_version = getCommit(branch_id).version;
         if (split_point.equals(head_id)) {
             checkout3(branch_name);
             System.out.println("Current branch fast-forwarded.");
@@ -512,29 +524,31 @@ public class Repository {
             System.out.println("Given branch is an ancestor of the current branch.");
             return;
         } else {
-            // any file:
-            /**
-            if (ismodified(branch, filename) && !ismodified(head, filename)){
-                checkout2(branch_id, filename);
-                add(filename);
-             } else if (ismodified(head, filename) && !ismodified(branch, filename)) {
-                // do nothing
-             } else if (file in head == file in branch) {
-                // do nothing
-             } else if (!split_point_commit.contianskey(filename) && !head_commit.contianskey(filename)) {
-                // checkput and staged(what type of checkout?)
-             } else if (!split_point_commit.contianskey(filename) && !branch_commit.contianskey(filename)){
-                // do nothing
-             } else if (split_point_commit.contianskey(filename) && !ismodified(head, filename) && isabscent(branch, fileanme) {
-                //remove
-                //untrack
-             } else if (split_point_commit.contianskey(filename) && !ismodified(branch, filename) && isabscent(head, fileanme)) {
-                // do nothing
-             } else {
-                // conflicted, overwrite the file with two versions
-             }*/
+            List<String> file_names = plainFilenamesIn(CWD);
+            for (String filename : file_names) {
+                 if (ismodified(split_point, branch_id, filename) && !ismodified(split_point, head_id, filename)){
+                    checkout2(branch_id, filename);
+                    add(filename);
+                 } else if (ismodified(split_point, head_id, filename) && !ismodified(split_point, branch_id, filename)) {
+                 // do nothing
+                 } else if (ismodified(branch_id, head_id, filename) || (!head_version.containsKey(filename) && !branch_version.containsKey(filename))) {
+                 // do nothing
+                 } else if (!split_point_commit.contianskey(filename) && !head_commit.contianskey(filename)) {
+                 // checkput and staged(what type of checkout?)
+                 } else if (!split_point_commit.contianskey(filename) && !branch_commit.contianskey(filename)){
+                 // do nothing
+                 } else if (split_point_commit.contianskey(filename) && !ismodified(head, filename) && isabscent(branch, fileanme) {
+                 //remove
+                 //untrack
+                 } else if (split_point_commit.contianskey(filename) && !ismodified(branch, filename) && isabscent(head, fileanme)) {
+                 // do nothing
+                 } else {
+                 // conflicted, overwrite the file with two versions
+                 }
+            }
+
         }
-        // do stuff
+        // merge commit, print stuff
     }
 
 
