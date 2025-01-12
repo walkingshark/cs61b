@@ -435,7 +435,7 @@ public class Repository {
             writeObject(BRANCHES, branches);
         }
     }
-    private static boolean istracked(String filename) { // need to modify
+    private static boolean istracked(String filename) {
         getAdd();
         getHead();
         getBranches();
@@ -468,6 +468,7 @@ public class Repository {
             // if a file is untracked in current branch and would be overwritten
             if (!istracked(filename) && this_commit_version.containsKey(filename)) {
                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                return;
             }
         }
         for (Map.Entry<String, String> entry : this_commit_version.entrySet()) {
@@ -498,11 +499,32 @@ public class Repository {
             return true;
         }
     }
+    private static boolean isabscent(String branch_id, String filename) {
+        getAdd();
+        TreeMap<String, String> branch_file_version = getCommit(branch_id).version;
+        if (branch_file_version.containsKey(filename) || add.containsKey(filename)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
     public static void merge(String branch_name) {
         /** */
         String split_point = "";
         getBranches();
         getHead();
+        if (!add.isEmpty() && !remove.isEmpty()) {
+            System.out.println("You have uncommitted changes.");
+            System.exit(0);
+        }
+        if (!branches.containsKey(branch_name)) {
+            System.out.println("A branch with that name does not exist.");
+            return;
+        }
+        if (head.equals(branch_name)) {
+            System.out.println("Cannot merge a branch with itself.");
+            return;
+        }
         String head_id = branches.get(head);
         String branch_id = branches.get(branch_name);
         List<String> headChain = getCommitChain(head_id); // from latest to initial commit
@@ -516,6 +538,7 @@ public class Repository {
         }
         TreeMap<String, String> head_version = getCommit(head_id).version;
         TreeMap<String, String> branch_version = getCommit(branch_id).version;
+        TreeMap<String, String> split_version = getCommit(split_point).version;
         if (split_point.equals(head_id)) {
             checkout3(branch_name);
             System.out.println("Current branch fast-forwarded.");
@@ -525,6 +548,7 @@ public class Repository {
             return;
         } else {
             List<String> file_names = plainFilenamesIn(CWD);
+            boolean conflict = false;
             for (String filename : file_names) {
                  if (ismodified(split_point, branch_id, filename) && !ismodified(split_point, head_id, filename)){
                     checkout2(branch_id, filename);
@@ -533,22 +557,41 @@ public class Repository {
                  // do nothing
                  } else if (ismodified(branch_id, head_id, filename) || (!head_version.containsKey(filename) && !branch_version.containsKey(filename))) {
                  // do nothing
-                 } else if (!split_point_commit.contianskey(filename) && !head_commit.contianskey(filename)) {
+                 } else if (!split_version.containsKey(filename) && !head_version.containsKey(filename)) {
                  // checkput and staged(what type of checkout?)
-                 } else if (!split_point_commit.contianskey(filename) && !branch_commit.contianskey(filename)){
+                     checkout2(branch_id, filename);
+                     add(filename);
+                 } else if (!split_version.containsKey(filename) && !branch_version.containsKey(filename)){
                  // do nothing
-                 } else if (split_point_commit.contianskey(filename) && !ismodified(head, filename) && isabscent(branch, fileanme) {
-                 //remove
-                 //untrack
-                 } else if (split_point_commit.contianskey(filename) && !ismodified(branch, filename) && isabscent(head, fileanme)) {
+                 } else if (split_version.containsKey(filename) && !ismodified(split_point, head_id, filename) && isabscent(branch_id, filename)) {
+                    if (!istracked(filename)) {
+                        System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                        System.exit(0);
+                    }
+                    restrictedDelete(filename);
+                    head_version.remove(filename);
+                 } else if (split_version.containsKey(filename) && !ismodified(split_point, branch_id, filename) && isabscent(head_id, filename)) {
                  // do nothing
                  } else {
                  // conflicted, overwrite the file with two versions
+                     conflict = true;
+                     if (!istracked(filename)) {
+                         System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                         System.exit(0);
+                     }
+                     writeContents(join(CWD, filename), "<<<<<<< HEAD\n"+readContentsAsString(join(BLOBS, head_version.get(filename)))+
+                             "=======\n"+readContentsAsString(join(BLOBS, branch_version.get(filename)))+">>>>>>>");
                  }
+            }
+            if (conflict) {
+                System.out.println("Encountered a merge conflict.");
+            } else {
+                commit("Merged " + branch_name + " into " + head + ".");
+                getCommit(branches.get(head)).parent2 = branch_name;
             }
 
         }
-        // merge commit, print stuff
+        
     }
 
 
