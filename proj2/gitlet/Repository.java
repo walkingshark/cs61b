@@ -268,8 +268,6 @@ public class Repository {
          for (String commit_id : commitChain) {
              print_commit(commit_id);
          }
-         //print initial commit
-         print_commit(currentCommitID);
          //store stuff(didn't change anything so no need)
 
     }
@@ -591,7 +589,7 @@ public class Repository {
             }
 
         }
-        
+
     }
 
 

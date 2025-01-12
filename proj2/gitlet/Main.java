@@ -94,7 +94,7 @@ public class Main {
 
                     break;
                 case "merge":
-                    check_operands(args, 1);
+                    check_operands(args, 2);
                     Repository.merge(args[1]);
 
                 default:
