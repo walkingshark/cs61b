@@ -548,18 +548,18 @@ public class Repository {
             List<String> file_names = plainFilenamesIn(CWD);
             boolean conflict = false;
             for (String filename : file_names) {
-                 if (ismodified(split_point, branch_id, filename) && !ismodified(split_point, head_id, filename)){
-                    checkout2(branch_id, filename);
-                    add(filename);
-                 } else if (ismodified(split_point, head_id, filename) && !ismodified(split_point, branch_id, filename)) {
-                 // do nothing
-                 } else if (ismodified(branch_id, head_id, filename) || (!head_version.containsKey(filename) && !branch_version.containsKey(filename))) {
+
+                 if (split_version.containsKey(filename) && !ismodified(split_point, branch_id, filename) && isabscent(head_id, filename)){
+                    // do nothing
+                 } else if (!split_version.containsKey(filename) && !branch_version.containsKey(filename)) {
                  // do nothing
                  } else if (!split_version.containsKey(filename) && !head_version.containsKey(filename)) {
-                 // checkput and staged(what type of checkout?)
+                     // checkput and staged(what type of checkout?)
                      checkout2(branch_id, filename);
                      add(filename);
-                 } else if (!split_version.containsKey(filename) && !branch_version.containsKey(filename)){
+                 } else if (ismodified(branch_id, head_id, filename) || (!head_version.containsKey(filename) && !branch_version.containsKey(filename))) {
+                 // do nothing
+                 } else if (ismodified(split_point, head_id, filename) && !ismodified(split_point, branch_id, filename)){
                  // do nothing
                  } else if (split_version.containsKey(filename) && !ismodified(split_point, head_id, filename) && isabscent(branch_id, filename)) {
                     if (!istracked(filename)) {
@@ -568,8 +568,9 @@ public class Repository {
                     }
                     restrictedDelete(filename);
                     head_version.remove(filename);
-                 } else if (split_version.containsKey(filename) && !ismodified(split_point, branch_id, filename) && isabscent(head_id, filename)) {
-                 // do nothing
+                 } else if (ismodified(split_point, branch_id, filename) && !ismodified(split_point, head_id, filename)) {
+                     checkout2(branch_id, filename);
+                     add(filename);
                  } else {
                  // conflicted, overwrite the file with two versions
                      conflict = true;
