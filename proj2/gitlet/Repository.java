@@ -595,11 +595,9 @@ public class Repository {
                      if (in_branch) {
                          file_in_branch = readContentsAsString(join(BLOBS, branch_version.get(filename)));
                      }
-                     String debug = "<<<<<<< HEAD\n"+file_in_head+
-                             "=======\n"+file_in_branch+">>>>>>>";
                      writeContents(join(CWD, filename), "<<<<<<< HEAD\n"+file_in_head+
                              "=======\n"+file_in_branch+">>>>>>>");
-                     //System.out.println(debug);
+                     add(filename);
                  }
             }
             if (conflict) {
