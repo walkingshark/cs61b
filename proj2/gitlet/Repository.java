@@ -596,7 +596,7 @@ public class Repository {
                          file_in_branch = readContentsAsString(join(BLOBS, branch_version.get(filename)));
                      }
                      writeContents(join(CWD, filename), "<<<<<<< HEAD\n"+file_in_head+
-                             "=======\n"+file_in_branch+">>>>>>>");
+                             "=======\n"+file_in_branch+">>>>>>>\n");
                      add(filename);
                  }
             }
