@@ -587,8 +587,19 @@ public class Repository {
                          System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                          System.exit(0);
                      }
-                     writeContents(join(CWD, filename), "<<<<<<< HEAD\n"+readContentsAsString(join(BLOBS, head_version.get(filename)))+
-                             "=======\n"+readContentsAsString(join(BLOBS, branch_version.get(filename)))+">>>>>>>");
+                     String file_in_head = "";
+                     String file_in_branch = "";
+                     if (in_head) {
+                         file_in_head = readContentsAsString(join(BLOBS, head_version.get(filename)));
+                     }
+                     if (in_branch) {
+                         file_in_branch = readContentsAsString(join(BLOBS, branch_version.get(filename)));
+                     }
+                     //String debug = "<<<<<<< HEAD\n"+file_in_head+
+                             //"=======\n"+file_in_branch+">>>>>>>";
+                     writeContents(join(CWD, filename), "<<<<<<< HEAD\n"+file_in_head+
+                             "=======\n"+file_in_branch+">>>>>>>");
+                     //System.out.println(debug);
                  }
             }
             if (conflict) {
