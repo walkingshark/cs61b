@@ -564,7 +564,7 @@ public class Repository {
                      // checkout and staged(what type of checkout?)
                      checkout2(branch_id, filename);
                      add(filename);
-                 } else if ((!in_head && !in_branch) || !ismodified(branch_id, head_id, filename)) {
+                 } else if ((!in_head && !in_branch) || (in_head && in_branch && !ismodified(branch_id, head_id, filename))) {
                      // do nothing
                      //modified in the same way
                  } else if (in_split && in_head && in_branch && ismodified(split_point, head_id, filename) && !ismodified(split_point, branch_id, filename)) {

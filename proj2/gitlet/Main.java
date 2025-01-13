@@ -96,7 +96,7 @@ public class Main {
                 case "merge":
                     check_operands(args, 2);
                     Repository.merge(args[1]);
-
+                    break;
                 default:
                     System.out.println("No command with that name exists.");
                     System.exit(0);
