@@ -513,7 +513,7 @@ public class Repository {
         String split_point = "";
         getBranches();
         getHead();
-        if (!add.isEmpty() && !remove.isEmpty()) {
+        if (!add.isEmpty() || !remove.isEmpty()) {
             System.out.println("You have uncommitted changes.");
             System.exit(0);
         }
@@ -600,17 +600,11 @@ public class Repository {
                      add(filename);
                  }
             }
+            commit("Merged " + branch_name + " into " + head + ".");
+            getCommit(branches.get(head)).parent2 = branch_id;
             if (conflict) {
                 System.out.println("Encountered a merge conflict.");
-            } else {
-                commit("Merged " + branch_name + " into " + head + ".");
-                getCommit(branches.get(head)).parent2 = branch_name;
             }
-
         }
-
     }
-
-
-
 }
