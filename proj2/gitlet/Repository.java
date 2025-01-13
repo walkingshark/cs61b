@@ -393,6 +393,7 @@ public class Repository {
             // if a file is untracked in current branch and would be overwritten
             if (!istracked(filename) && file_versions.containsKey(filename)) {
                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                System.exit(0);
             }
         }
         for (Map.Entry<String, String> entry : file_versions.entrySet()) {
@@ -487,11 +488,12 @@ public class Repository {
         writeObject(ADD, add);
         writeObject(BRANCHES, branches);
     }
-    private static boolean ismodified(String split_id, String branch_id, String filename) {
+    private static boolean ismodified(String commit1, String commit2, String filename) {
         // check if a file is modified since split point
-        String split_content = getCommit(split_id).version.get(filename);
-        String branch_content = getCommit(branch_id).version.get(filename);
-        if (split_content.equals(branch_content)) {
+        // ! file must exist in split point and branch(content1 and content2)
+        String content1 = getCommit(commit1).version.get(filename);
+        String content2 = getCommit(commit2).version.get(filename);
+        if (content1.equals(content2)) { // has a bug
             return false;
         } else {
             return true;
@@ -545,30 +547,37 @@ public class Repository {
             System.out.println("Given branch is an ancestor of the current branch.");
             return;
         } else {
-            List<String> file_names = plainFilenamesIn(CWD);
+            Set<String> file_names = new TreeSet<>();
+            file_names.addAll(head_version.keySet());
+            file_names.addAll(branch_version.keySet());
+            file_names.addAll(split_version.keySet());
             boolean conflict = false;
             for (String filename : file_names) {
-
-                 if (split_version.containsKey(filename) && !ismodified(split_point, branch_id, filename) && isabscent(head_id, filename)){
+                 boolean in_split = split_version.containsKey(filename);
+                 boolean in_head = head_version.containsKey(filename);
+                 boolean in_branch = branch_version.containsKey(filename);
+                 if (in_split && !ismodified(split_point, branch_id, filename) && isabscent(head_id, filename)){
                     // do nothing
-                 } else if (!split_version.containsKey(filename) && !branch_version.containsKey(filename)) {
+                 } else if (!in_split && !in_branch && in_head) {
                  // do nothing
-                 } else if (!split_version.containsKey(filename) && !head_version.containsKey(filename)) {
-                     // checkput and staged(what type of checkout?)
+                 } else if (!in_split && in_branch && !in_head) {
+                     // checkout and staged(what type of checkout?)
                      checkout2(branch_id, filename);
                      add(filename);
-                 } else if (ismodified(branch_id, head_id, filename) || (!head_version.containsKey(filename) && !branch_version.containsKey(filename))) {
-                 // do nothing
-                 } else if (ismodified(split_point, head_id, filename) && !ismodified(split_point, branch_id, filename)){
-                 // do nothing
-                 } else if (split_version.containsKey(filename) && !ismodified(split_point, head_id, filename) && isabscent(branch_id, filename)) {
+                 } else if ((!in_head && !in_branch) || !ismodified(branch_id, head_id, filename)) {
+                     // do nothing
+                     //modified in the same way
+                 } else if (in_split && in_head && in_branch && ismodified(split_point, head_id, filename) && !ismodified(split_point, branch_id, filename)) {
+                 // modified in head but not other, file not exist in split point and branch and head
+                 } else if (in_split && !ismodified(split_point, head_id, filename) && isabscent(branch_id, filename)) {
                     if (!istracked(filename)) {
                         System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                         System.exit(0);
                     }
                     restrictedDelete(filename);
                     head_version.remove(filename);
-                 } else if (ismodified(split_point, branch_id, filename) && !ismodified(split_point, head_id, filename)) {
+                 } else if (in_split && in_head && in_branch && !ismodified(split_point, head_id, filename) && ismodified(split_point, branch_id, filename)) {
+                     // modified in other but not head, file not exist in split point and branch and head
                      checkout2(branch_id, filename);
                      add(filename);
                  } else {
