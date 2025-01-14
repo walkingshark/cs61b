@@ -241,9 +241,9 @@ public class Repository {
         //String s = String.format("Date: " + "%1$ta %1$tb %1$te %1$tT %1$tY %1$tz", currentCommit.time);// the date is in chinese, might need to fix
         System.out.println("===");
         System.out.println("commit " + commitID);
-        if (currentCommit.parent2 != null) {
-            System.out.println("Merge: " + currentCommit.parent.substring(0, 6) + " " + currentCommit.parent2.substring(0, 6));
-        }
+        //if (currentCommit.parent2 != null) {
+            //System.out.println("Merge: " + currentCommit.parent.substring(0, 6) + " " + currentCommit.parent2.substring(0, 6));
+        //}
         System.out.println("Date: " + formattedDate);
         System.out.println(currentCommit.message);
         System.out.println();
