@@ -547,6 +547,7 @@ public class Repository {
             System.out.println("Given branch is an ancestor of the current branch.");
             return;
         } else {
+            List<String> all_files = plainFilenamesIn(CWD);
             Set<String> file_names = new TreeSet<>();
             file_names.addAll(head_version.keySet());
             file_names.addAll(branch_version.keySet());
@@ -562,7 +563,7 @@ public class Repository {
                  // do nothing
                  } else if (!in_split && in_branch && !in_head) {
                      // checkout and staged(what type of checkout?)
-                     if (!istracked(filename)) {
+                     if (all_files.contains(filename) && !istracked(filename)) {
                          System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                          System.exit(0);
                      }
@@ -574,18 +575,10 @@ public class Repository {
                  } else if (in_split && in_head && in_branch && ismodified(split_point, head_id, filename) && !ismodified(split_point, branch_id, filename)) {
                  // modified in head but not other, file not exist in split point and branch and head
                  } else if (in_split && !ismodified(split_point, head_id, filename) && isabscent(branch_id, filename)) {
-                    if (!istracked(filename)) {
-                        System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
-                        System.exit(0);
-                    }
                     restrictedDelete(filename);
                     head_version.remove(filename);
                  } else if (in_split && in_head && in_branch && !ismodified(split_point, head_id, filename) && ismodified(split_point, branch_id, filename)) {
                      // modified in other but not head, file not exist in split point and branch and head
-                     if (!istracked(filename)) {
-                         System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
-                         System.exit(0);
-                     }
                      checkout2(branch_id, filename);
                      add(filename);
                  } else {
@@ -594,7 +587,7 @@ public class Repository {
                      if (!istracked(filename)) {
                          System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                          System.exit(0);
-                     } 
+                     }
                      String file_in_head = "";
                      String file_in_branch = "";
                      if (in_head) {
@@ -608,7 +601,7 @@ public class Repository {
                      add(filename);
                  }
             }
-
+            //System.out.println("w");
             commit("Merged " + branch_name + " into " + head + ".");
             getCommit(branches.get(head)).parent2 = branch_id;
             if (conflict) {
