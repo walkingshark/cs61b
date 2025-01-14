@@ -562,6 +562,10 @@ public class Repository {
                  // do nothing
                  } else if (!in_split && in_branch && !in_head) {
                      // checkout and staged(what type of checkout?)
+                     if (!istracked(filename)) {
+                         System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                         System.exit(0);
+                     }
                      checkout2(branch_id, filename);
                      add(filename);
                  } else if ((!in_head && !in_branch) || (in_head && in_branch && !ismodified(branch_id, head_id, filename))) {
@@ -578,6 +582,10 @@ public class Repository {
                     head_version.remove(filename);
                  } else if (in_split && in_head && in_branch && !ismodified(split_point, head_id, filename) && ismodified(split_point, branch_id, filename)) {
                      // modified in other but not head, file not exist in split point and branch and head
+                     if (!istracked(filename)) {
+                         System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                         System.exit(0);
+                     }
                      checkout2(branch_id, filename);
                      add(filename);
                  } else {
@@ -586,7 +594,7 @@ public class Repository {
                      if (!istracked(filename)) {
                          System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                          System.exit(0);
-                     }
+                     } 
                      String file_in_head = "";
                      String file_in_branch = "";
                      if (in_head) {
@@ -600,6 +608,7 @@ public class Repository {
                      add(filename);
                  }
             }
+
             commit("Merged " + branch_name + " into " + head + ".");
             getCommit(branches.get(head)).parent2 = branch_id;
             if (conflict) {
