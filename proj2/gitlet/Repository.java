@@ -241,8 +241,8 @@ public class Repository {
         //String s = String.format("Date: " + "%1$ta %1$tb %1$te %1$tT %1$tY %1$tz", currentCommit.time);// the date is in chinese, might need to fix
         System.out.println("===");
         System.out.println("commit " + commitID);
-        if (!(currentCommit.parent2 == null)) {
-            System.out.println("Merge: " + currentCommit.parent.substring(0, 6) + currentCommit.parent2.substring(0, 6));
+        if (currentCommit.parent2 != null) {
+            System.out.println("Merge: " + currentCommit.parent.substring(0, 6) + " " + currentCommit.parent2.substring(0, 6));
         }
         System.out.println("Date: " + formattedDate);
         System.out.println(currentCommit.message);
@@ -513,6 +513,8 @@ public class Repository {
         String split_point = "";
         getBranches();
         getHead();
+        getAdd();
+        getRemove();
         if (!add.isEmpty() || !remove.isEmpty()) {
             System.out.println("You have uncommitted changes.");
             System.exit(0);
@@ -527,14 +529,50 @@ public class Repository {
         }
         String head_id = branches.get(head);
         String branch_id = branches.get(branch_name);
-        List<String> headChain = getCommitChain(head_id); // from latest to initial commit
-        List<String> branchChain = getCommitChain(branch_id);
-        // find split point
-        for (String commit_id : headChain) {
-            if (branchChain.contains(commit_id)) {
-                split_point = commit_id;
+
+        Set<String> head_parents = new TreeSet<>();
+        Set<String> branch_parents = new TreeSet<>();
+        Queue<String> head_q = new ArrayDeque<>();
+        Queue<String> branch_q = new ArrayDeque<>();
+        head_q.add(head_id);
+        branch_q.add(branch_id);
+        while (!head_q.isEmpty() || !branch_q.isEmpty()) {
+            // add parent into set and check: retainall
+
+            for (int i = 0; i < head_q.size(); i++) {
+                String cur_id = head_q.poll();
+                head_parents.add(cur_id);
+                Commit cur_commit = getCommit(cur_id);
+                if (!cur_commit.message.equals("initial commit")) {
+                    head_q.add(cur_commit.parent);
+                }
+                if (cur_commit.parent2 != null) {
+                    head_q.add(cur_commit.parent2);
+                }
+            }
+            for (int i = 0; i < branch_q.size(); i++) {
+                String cur_id = branch_q.poll();
+                branch_parents.add(cur_id);
+                Commit cur_commit = getCommit(cur_id);
+                if (!cur_commit.message.equals("initial commit")) {
+                    branch_q.add(cur_commit.parent);
+                }
+                if (cur_commit.parent2 != null) {
+                    branch_q.add(cur_commit.parent2);
+                }
+            }
+            Set<String> s = new TreeSet<>(head_parents);
+            s.retainAll(branch_parents);
+            if (!s.isEmpty()) {
+                for (String first_string : s) {
+                    split_point = first_string;
+                    break;
+                }
                 break;
             }
+        }
+        if (getCommit(split_point).message.equals("initial commit") && !getCommit(getCommit(head_id).parent).message.equals("initial commit")) {
+            System.out.println("true");
         }
         TreeMap<String, String> head_version = getCommit(head_id).version;
         TreeMap<String, String> branch_version = getCommit(branch_id).version;
@@ -569,6 +607,7 @@ public class Repository {
                      }
                      checkout2(branch_id, filename);
                      add(filename);
+                     writeObject(ADD, add);
                  } else if ((!in_head && !in_branch) || (in_head && in_branch && !ismodified(branch_id, head_id, filename))) {
                      // do nothing
                      //modified in the same way
@@ -581,6 +620,7 @@ public class Repository {
                      // modified in other but not head, file not exist in split point and branch and head
                      checkout2(branch_id, filename);
                      add(filename);
+                     writeObject(ADD, add);
                  } else {
                  // conflicted, overwrite the file with two versions
                      conflict = true;
@@ -599,11 +639,15 @@ public class Repository {
                      writeContents(join(CWD, filename), "<<<<<<< HEAD\n"+file_in_head+
                              "=======\n"+file_in_branch+">>>>>>>\n");
                      add(filename);
+                     writeObject(ADD, add);
                  }
             }
             //System.out.println("w");
             commit("Merged " + branch_name + " into " + head + ".");
-            getCommit(branches.get(head)).parent2 = branch_id;
+            String new_head_id = branches.get(head);
+            Commit new_head_commit = getCommit(new_head_id);
+            new_head_commit.parent2 = branch_id;
+            writeObject(join(COMMIT, new_head_id), new_head_commit);
             if (conflict) {
                 System.out.println("Encountered a merge conflict.");
             }
